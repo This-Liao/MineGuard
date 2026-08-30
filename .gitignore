@@ -1,0 +1,35 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+application-local.yml
+**/application-local.yml
+
+# Runtime data
+data/runtime/
+.mineguard/
+*.db
+*.mv.db
+*.trace.db
+
+# Java / Maven
+target/
+*.class
+*.log
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+.DS_Store
+Thumbs.db

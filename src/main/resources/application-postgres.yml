@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/mineguard}
+    username: ${DATABASE_USERNAME:mineguard}
+    password: ${DATABASE_PASSWORD:mineguard}
+    driver-class-name: org.postgresql.Driver

@@ -1,0 +1,188 @@
+{
+  "caseCount" : 30,
+  "recallAt1" : 1.0,
+  "recallAt3" : 1.0,
+  "recallAt5" : 1.0,
+  "mrr" : 1.0,
+  "cases" : [ {
+    "id" : "R01",
+    "query" : "人员未佩戴安全帽和吸烟等违规如何管理",
+    "expectedDocumentIds" : [ "K001-personnel-violation" ],
+    "actualDocumentIds" : [ "K001-personnel-violation", "K011-personnel-stay", "K009-ppe", "K004-detection-task", "K010-low-light" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R02",
+    "query" : "瓦斯异常告警的应急处置步骤",
+    "expectedDocumentIds" : [ "K002-gas-warning" ],
+    "actualDocumentIds" : [ "K002-gas-warning", "K012-emergency-evacuation", "K005-ventilation", "K006-fire-response", "K015-alert-escalation" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R03",
+    "query" : "摄像头状态 DEGRADED 应检查什么",
+    "expectedDocumentIds" : [ "K003-device-inspection" ],
+    "actualDocumentIds" : [ "K003-device-inspection", "K019-camera-offline", "K004-detection-task", "K005-ventilation", "K008-intrusion" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R04",
+    "query" : "启动停止智能检测算法为什么需要人工批准和验证",
+    "expectedDocumentIds" : [ "K004-detection-task", "K017-tool-safety" ],
+    "actualDocumentIds" : [ "K004-detection-task", "K017-tool-safety", "K003-device-inspection", "K011-personnel-stay", "K008-intrusion" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R05",
+    "query" : "主扇局部通风风门和风量安全检查",
+    "expectedDocumentIds" : [ "K005-ventilation" ],
+    "actualDocumentIds" : [ "K005-ventilation", "K014-inspection-plan", "K012-emergency-evacuation", "K003-device-inspection", "K008-intrusion" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R06",
+    "query" : "井下烟雾明火火灾时如何撤离处置",
+    "expectedDocumentIds" : [ "K006-fire-response", "K012-emergency-evacuation" ],
+    "actualDocumentIds" : [ "K006-fire-response", "K012-emergency-evacuation", "K019-camera-offline", "K001-personnel-violation", "K003-device-inspection" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R07",
+    "query" : "机电设备供电中断温升异响如何处理",
+    "expectedDocumentIds" : [ "K007-electromechanical" ],
+    "actualDocumentIds" : [ "K007-electromechanical", "K003-device-inspection", "K019-camera-offline", "K011-personnel-stay", "K006-fire-response" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R08",
+    "query" : "人员进入禁区 INTRUSION 越界事件处置",
+    "expectedDocumentIds" : [ "K008-intrusion" ],
+    "actualDocumentIds" : [ "K008-intrusion", "K001-personnel-violation", "K011-personnel-stay", "K020-incident-review", "K002-gas-warning" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R09",
+    "query" : "PPE 个体防护装备和安全帽检查",
+    "expectedDocumentIds" : [ "K009-ppe" ],
+    "actualDocumentIds" : [ "K009-ppe", "K003-device-inspection", "K014-inspection-plan", "K005-ventilation", "K016-sensor-calibration" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R10",
+    "query" : "LOW_LIGHT 低照度影响视频算法怎么办",
+    "expectedDocumentIds" : [ "K010-low-light" ],
+    "actualDocumentIds" : [ "K010-low-light", "K015-alert-escalation", "K001-personnel-violation", "K004-detection-task", "K016-sensor-calibration" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R11",
+    "query" : "PERSONNEL_STAY 人员长时间滞留风险",
+    "expectedDocumentIds" : [ "K011-personnel-stay" ],
+    "actualDocumentIds" : [ "K011-personnel-stay", "K012-emergency-evacuation", "K001-personnel-violation", "K005-ventilation", "K002-gas-warning" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R12",
+    "query" : "重大告警应急撤离路线集合点人员清点",
+    "expectedDocumentIds" : [ "K012-emergency-evacuation" ],
+    "actualDocumentIds" : [ "K012-emergency-evacuation", "K002-gas-warning", "K006-fire-response", "K011-personnel-stay", "K014-inspection-plan" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R13",
+    "query" : "班次交接需要汇总哪些未关闭安全事项",
+    "expectedDocumentIds" : [ "K013-shift-handover" ],
+    "actualDocumentIds" : [ "K013-shift-handover", "K020-incident-review", "K017-tool-safety", "K005-ventilation", "K002-gas-warning" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R14",
+    "query" : "怎样编制包含优先级责任人复核的巡查计划",
+    "expectedDocumentIds" : [ "K014-inspection-plan" ],
+    "actualDocumentIds" : [ "K014-inspection-plan", "K001-personnel-violation", "K013-shift-handover", "K004-detection-task", "K005-ventilation" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R15",
+    "query" : "LOW MEDIUM HIGH CRITICAL 告警分级升级策略",
+    "expectedDocumentIds" : [ "K015-alert-escalation" ],
+    "actualDocumentIds" : [ "K015-alert-escalation", "K002-gas-warning", "K001-personnel-violation", "K005-ventilation", "K010-low-light" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R16",
+    "query" : "瓦斯气体传感器标校漂移和交叉复测",
+    "expectedDocumentIds" : [ "K016-sensor-calibration" ],
+    "actualDocumentIds" : [ "K016-sensor-calibration", "K002-gas-warning", "K014-inspection-plan", "K004-detection-task", "K007-electromechanical" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R17",
+    "query" : "自然语言管理员命令能否绕过高风险工具审批",
+    "expectedDocumentIds" : [ "K017-tool-safety" ],
+    "actualDocumentIds" : [ "K017-tool-safety", "K004-detection-task", "K018-evidence-trace", "K011-personnel-stay", "K001-personnel-violation" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R18",
+    "query" : "Trace 应记录工具检索审批且不记录 API Key",
+    "expectedDocumentIds" : [ "K018-evidence-trace" ],
+    "actualDocumentIds" : [ "K018-evidence-trace", "K004-detection-task", "K017-tool-safety", "K012-emergency-evacuation", "K003-device-inspection" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R19",
+    "query" : "摄像头 OFFLINE 离线后检查电源交换机和心跳",
+    "expectedDocumentIds" : [ "K019-camera-offline" ],
+    "actualDocumentIds" : [ "K019-camera-offline", "K003-device-inspection", "K014-inspection-plan", "K009-ppe", "K006-fire-response" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R20",
+    "query" : "安全事件复盘的时间区域处置验证关闭依据",
+    "expectedDocumentIds" : [ "K020-incident-review" ],
+    "actualDocumentIds" : [ "K020-incident-review", "K008-intrusion", "K001-personnel-violation", "K005-ventilation", "K002-gas-warning" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R21",
+    "query" : "高频 NO_HELMET 违规应该按区域趋势分析",
+    "expectedDocumentIds" : [ "K001-personnel-violation", "K009-ppe" ],
+    "actualDocumentIds" : [ "K001-personnel-violation", "K008-intrusion", "K009-ppe", "K014-inspection-plan", "K020-incident-review" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R22",
+    "query" : "瓦斯告警关联通风设施检查",
+    "expectedDocumentIds" : [ "K002-gas-warning", "K005-ventilation" ],
+    "actualDocumentIds" : [ "K005-ventilation", "K002-gas-warning", "K014-inspection-plan", "K015-alert-escalation", "K003-device-inspection" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R23",
+    "query" : "DEVICE_OFFLINE 后如何补偿关键区域安全监测",
+    "expectedDocumentIds" : [ "K019-camera-offline", "K007-electromechanical" ],
+    "actualDocumentIds" : [ "K019-camera-offline", "K011-personnel-stay", "K001-personnel-violation", "K005-ventilation", "K009-ppe" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R24",
+    "query" : "入侵事件不能自动推断人员身份和处罚",
+    "expectedDocumentIds" : [ "K008-intrusion" ],
+    "actualDocumentIds" : [ "K008-intrusion", "K001-personnel-violation", "K020-incident-review", "K011-personnel-stay", "K012-emergency-evacuation" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R25",
+    "query" : "画面丢帧遮挡延迟和镜头污染巡检",
+    "expectedDocumentIds" : [ "K003-device-inspection", "K010-low-light" ],
+    "actualDocumentIds" : [ "K003-device-inspection", "K010-low-light", "K016-sensor-calibration", "K001-personnel-violation", "K009-ppe" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R26",
+    "query" : "审批拒绝后不得执行系统状态变更",
+    "expectedDocumentIds" : [ "K004-detection-task", "K017-tool-safety" ],
+    "actualDocumentIds" : [ "K004-detection-task", "K018-evidence-trace", "K017-tool-safety", "K003-device-inspection", "K020-incident-review" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R27",
+    "query" : "告警算法置信度能否作为关闭事件依据",
+    "expectedDocumentIds" : [ "K015-alert-escalation" ],
+    "actualDocumentIds" : [ "K015-alert-escalation", "K002-gas-warning", "K020-incident-review", "K001-personnel-violation", "K008-intrusion" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R28",
+    "query" : "结构化事件统计和知识检索如何形成证据链",
+    "expectedDocumentIds" : [ "K018-evidence-trace", "K020-incident-review" ],
+    "actualDocumentIds" : [ "K018-evidence-trace", "K020-incident-review", "K008-intrusion", "K017-tool-safety", "K005-ventilation" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R29",
+    "query" : "人员不适或跟踪误差导致区域滞留",
+    "expectedDocumentIds" : [ "K011-personnel-stay" ],
+    "actualDocumentIds" : [ "K011-personnel-stay", "K008-intrusion", "K012-emergency-evacuation", "K001-personnel-violation", "K002-gas-warning" ],
+    "firstRelevantRank" : 1
+  }, {
+    "id" : "R30",
+    "query" : "巡查计划中瓦斯人员违规设备告警分别检查什么",
+    "expectedDocumentIds" : [ "K014-inspection-plan" ],
+    "actualDocumentIds" : [ "K014-inspection-plan", "K001-personnel-violation", "K005-ventilation", "K002-gas-warning", "K003-device-inspection" ],
+    "firstRelevantRank" : 1
+  } ]
+}

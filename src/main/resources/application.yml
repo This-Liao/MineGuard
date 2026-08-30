@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: mineguard
+  datasource:
+    url: ${DATABASE_URL:jdbc:h2:mem:mineguard;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE}
+    username: ${DATABASE_USERNAME:sa}
+    password: ${DATABASE_PASSWORD:}
+    driver-class-name: ${DATABASE_DRIVER:org.h2.Driver}
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${PORT:8080}
+
+mineguard:
+  llm:
+    provider: ${MINEGUARD_LLM_PROVIDER:deterministic}
+    base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}
+    api-key: ${OPENAI_API_KEY:}
+    model: ${OPENAI_MODEL:gpt-4o-mini}
+  vector-store:
+    type: ${MINEGUARD_VECTOR_STORE:in-memory}
+    milvus-uri: ${MILVUS_URI:http://localhost:19530}
+  knowledge-path: ${MINEGUARD_KNOWLEDGE_PATH:data/knowledge}
+  trace-path: ${MINEGUARD_TRACE_PATH:data/runtime/traces}
+  workflow-executor-threads: ${MINEGUARD_WORKFLOW_THREADS:4}
+
+logging:
+  level:
+    com.mineguard: INFO
