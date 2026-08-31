@@ -1,0 +1,12 @@
+{
+  "sseReplayCount" : 19,
+  "finishedAt" : "2026-08-31T16:11:03.334231600Z",
+  "industrial" : "本地 HTTP 契约服务，不连接物理设备",
+  "database" : "PostgreSQL",
+  "applicationJvmCount" : 5,
+  "eventCount" : 21,
+  "model" : "本地确定性 HTTP 桩，不是 DeepSeek",
+  "duplicateCommandsDuringRecovery" : 0,
+  "status" : "PASSED",
+  "planningCrashRecoveryMs" : 6675
+}

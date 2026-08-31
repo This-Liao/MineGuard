@@ -18,6 +18,8 @@ data/runtime/
 target/
 *.class
 *.log
+__pycache__/
+*.pyc
 
 # 前端构建产物与依赖
 frontend/node_modules/

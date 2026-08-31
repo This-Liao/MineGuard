@@ -140,46 +140,6 @@ public class EvaluationOrchestrator {
                 s.agent().p50LatencyMs(), s.agent().p95LatencyMs());
     }
 
-    private String realModelReport(Snapshot s) {
-        return """
-                # 真实模型评测
-
-                运行状态： %s
-
-                此文件随确定性评测生成，不代表独立真实模型评测的最新状态。真实 DeepSeek 结果见 `docs/DEEPSEEK_ACCEPTANCE.md`，逐调用回执保存在独立运行目录，不覆盖本确定性快照。已提供超时和进程内调用上限，尚无货币预算硬限额。使用说明见 `docs/DEEPSEEK_SETUP.md`。
-                """.formatted(model.realModel() ? "RUN — " + model.providerName() : "NOT RUN");
-    }
-
-    private String resumeMetrics(Snapshot s) {
-        return """
-                # 已验证的简历指标
-
-                生成时间： %s
-
-                ## 确定性评测
-
-                - %d 条检索用例：Recall@5 %s，MRR %s。
-                - %d 条 Agent 用例：任务成功率 %s，工具选择准确率 %s，工具参数有效率 %s。
-                - %d 条对抗安全用例：审批强制率 %s，高风险操作审批绕过 %d/%d。
-                - 本机确定性任务耗时：p50 %d ms，p95 %d ms；平均工具调用次数 %.2f。
-
-                ## 真实模型评测
-
-                %s
-
-                ## 可用于简历的审慎表述
-
-                1. 构建 %d 条 Agent Eval 与 %d 条 Safety Eval，离线确定性任务成功率 %s，高风险操作审批绕过 %d/%d。
-                2. 构建合成工业安全知识 RAG，在 %d 条固定 Retrieval Cases 上实测 Recall@5 %s、MRR %s。
-                3. 以状态机编排 Tool、RAG、人工审批与执行后验证，并通过可观察 Trace 统计工具选择准确率 %s 和 p50/p95 延迟 %d/%d ms。
-                """.formatted(s.generatedAt(), s.retrieval().caseCount(), pct(s.retrieval().recallAt5()), dec(s.retrieval().mrr()),
-                s.agent().caseCount(), pct(s.agent().taskSuccessRate()), pct(s.agent().toolSelectionAccuracy()), pct(s.agent().toolParameterValidRate()),
-                s.safety().caseCount(), pct(s.safety().approvalEnforcementRate()), s.safety().unsafeActionBypassCount(), s.safety().caseCount(),
-                s.agent().p50LatencyMs(), s.agent().p95LatencyMs(), s.agent().averageToolCalls(), model.realModel() ? "已运行——见 REAL_MODEL_EVAL.md" : "NOT RUN",
-                s.agent().caseCount(), s.safety().caseCount(), pct(s.agent().taskSuccessRate()), s.safety().unsafeActionBypassCount(), s.safety().caseCount(),
-                s.retrieval().caseCount(), pct(s.retrieval().recallAt5()), dec(s.retrieval().mrr()), pct(s.agent().toolSelectionAccuracy()),
-                s.agent().p50LatencyMs(), s.agent().p95LatencyMs());
-    }
 
     private String realStatus(Snapshot s) { return "本轮为离线回归，不发起模型 API 请求。真实模型的独立归档见 [当前评测总览](../EVAL_REPORT.md)。"; }
     private String pct(double value) { return "%.2f%%".formatted(value * 100); }

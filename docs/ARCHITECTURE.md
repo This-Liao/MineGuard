@@ -34,6 +34,18 @@ Flyway 的 `V1__durable_workflow_security.sql` 创建：
 
 ## 租约与恢复
 
+核心引擎已按职责拆分，依赖单向，不引入新线程框架或事件总线：
+
+| 组件 | 责任 |
+| --- | --- |
+| `AgentWorkflowEngine` | 任务应用入口、状态流转、强制执行后验证与最终报告 |
+| `WorkflowScheduler` | 容量控制、租约领取、心跳与停机；委托引擎执行 |
+| `StepExecutor` | 步骤幂等、工具调用、证据收集、原子检查点 |
+| `ApprovalGuard` | 写前复核审批摘要、有效期和审批人的实时权限 |
+| `RecoveryCoordinator` | 核验原操作键回执，补记结果；没有回执则禁止重放 |
+
+持久化事务边界仍由 `JdbcAgentTaskStore` 负责。此次拆分不改变计划契约、工具语义或历史评测期望。
+
 认领 SQL 只更新可执行状态且租约空缺/过期的任务，成功时递增 fence。续约、检查点和释放都检查拥有者与 fence；检查点额外检查快照版本与租约未过期。时间采用数据库时钟，避免应用时钟偏差。过期旧节点无法覆盖接管者的状态。
 
 ```text
@@ -88,7 +100,11 @@ IndustrialContractServer 是可独立运行的本地契约服务，采用 H2 保
 
 SQL 负责完整的时间/区域/严重度过滤与计数；RAG 返回 documentId、chunkId、score 和内容证据。默认哈希 Embedding 与内存向量库用于可复现工程回归，Milvus REST 适配通过独立容器测试；不代表真实语义质量或完整生产集群验收。
 
+可选 `openai-compatible` Embedding 已接入；本地 BGE-small-zh-v1.5 使用 INT8 ONNX CPU 推理、CLS 池化与 L2 归一化。文档批量编码、查询独立前缀、返回索引与维度验证；超时或错误禁止静默降级为哈希。所有文档编码成功后才替换索引。模型和向量库独立配置，更换维度必须重建对应集合。实现与真实语义对照见 [语义检索评测](SEMANTIC_RETRIEVAL.md)。
+
 确定性快照、DeepSeek 实测、HTTP 模型桩测试分开保存。真实评测固定使用隔离 H2、合成数据和 Mock 工业网关，禁止让自动审批评测控制真实设备。原有关键词基线不执行工具，不能用于端到端模型优劣结论。
+
+Planning v2 的 24 条新题采用冻结源摘要与单次运行标记，首轮结果为 21/24；与旧固定 29/30 分开报告。见 [留出协议](HOLDOUT_PROTOCOL.md)、[首轮结果](HOLDOUT_EVAL.md) 和 [当前评测总览](EVAL_REPORT.md)。普通 CI 仅执行离线测试；外部集成通过手动或 nightly 工作流独立运行。
 
 ## 部署与未完成项
 

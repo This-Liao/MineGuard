@@ -5,6 +5,7 @@
 [CI 工作流](../.github/workflows/ci.yml) 在 GitHub 托管的 Ubuntu 24.04 runner 上运行：
 
 - Java 21：`mvn verify`，包含离线测试与 JaCoCo 指令覆盖率 ≥ 70% 门禁。
+- Python：向量侧车的 4 项 HTTP 契约测试，使用明确的测试替身，不下载权重、不发起推理请求。
 - Node.js 22：`npm ci` → `npm test` → `npm run build`，包含交互测试、类型检查和生产构建。
 - 后端和前端为两个独立作业；任意一个失败，不能将整次工作流报告为通过。
 - 测试报告和覆盖率报告保存 14 天；失败时也上传已生成的报告。

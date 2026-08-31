@@ -1,0 +1,207 @@
+{
+  "capturedAt": "2026-09-01T00:15:18.6255229+08:00",
+  "command": "MINEGUARD_RUN_EXTERNAL_IT=true mvn -q -Pexternal-it clean verify",
+  "java": "22.0.2",
+  "maven": "3.9.9",
+  "javaTarget": 21,
+  "status": "PASSED",
+  "backend": {
+    "failures": 0,
+    "suites": [
+      {
+        "name": "com.mineguard.agent.AgentReportComposerTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.agent.PlanningContractTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.api.AgentControllerIntegrationTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.api.ReadinessTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.device.HttpIndustrialGatewayTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.eval.EvaluationReportTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.eval.HoldoutGuardTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.eval.RealModelEvalApplicationTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.eval.RetrievalBenchmarkTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.eval.SemanticRetrievalDatasetTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.event.SafetyEventRepositoryIntegrationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.llm.OpenAiCompatibleAgentModelClientTest",
+        "tests": 22,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.rag.EmbeddingConfigurationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.rag.KnowledgeRetrieverIntegrationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.rag.OpenAiCompatibleEmbeddingClientTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.security.SecurityIntegrationTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.tool.ToolRegistryIntegrationTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.trace.TraceRecorderIntegrationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.workflow.AgentTaskStateTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.workflow.DurableWorkflowTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.workflow.WorkflowIntegrationTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.workflow.WorkflowRecoverySafetyTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.mineguard.workflow.WorkflowSchedulerTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "skipped": 0,
+    "errors": 0,
+    "tests": 126
+  },
+  "external": {
+    "failures": 0,
+    "skipped": 0,
+    "errors": 0,
+    "tests": 3
+  },
+  "frontend": {
+    "passed": 28,
+    "build": "PASSED",
+    "tests": 28
+  },
+  "embeddingHttpContract": {
+    "passed": 4,
+    "mode": "test double; no inference",
+    "tests": 4
+  },
+  "instructions": {
+    "percentage": 82.84,
+    "covered": 15211,
+    "minimum": 70,
+    "missed": 3152
+  },
+  "workflowSourcesLfSha256": {
+    "AgentWorkflowEngine.java": "762a2b7ef8c70d0776b6c30c0e18dc39fc9cc4b39be5ee5f68dc426c6bcc807a",
+    "ApprovalGuard.java": "566a66e66bc6b0b7f075f3a03abc0a085f863867ecdef9f894fea332106d0e71",
+    "RecoveryCoordinator.java": "98c155a38616d670bce57a56f8340a97a7639718cf7450eeef1e5d110c35dde7",
+    "StepExecutor.java": "f72d6dc8579f4bb7341dc420591e66d4327a8754b6fdce03ce28a7252e0e786b",
+    "WorkflowScheduler.java": "2eafbf4516b9038c94a03cb2b3b71bbcb6727a924a10dfcd2c449214a552a1c8"
+  },
+  "distributedRun": "workflow_it_34a1976e1e3843c7a2569f3b8bba4df1"
+}

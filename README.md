@@ -16,8 +16,8 @@
 [![DeepSeek][badge-deepseek]](docs/DEEPSEEK_SETUP.md)
 
 [![GitHub Actions CI][badge-ci]](https://github.com/This-Liao/MineGuard/actions/workflows/ci.yml)
-[![本地回归：135 项通过][badge-tests]](docs/TASK_REPORT.md#2026-08-31-本次验收)
-[![指令覆盖率：85.36%][badge-coverage]](docs/TASK_REPORT.md#2026-08-31-本次验收)
+[![后端回归：126 项通过][badge-tests]](docs/ENGINEERING_ACCEPTANCE.md)
+[![指令覆盖率：82.84%][badge-coverage]](docs/ENGINEERING_ACCEPTANCE.md)
 [![GitHub Stars][badge-stars]](https://github.com/This-Liao/MineGuard/stargazers)
 
 [操作演示](#实际操作演示) · [快速开始](#快速开始) · [核心能力](#核心能力) · [评测结果](#评测与质量) · [文档导航](#文档导航) · [反馈问题](https://github.com/This-Liao/MineGuard/issues)
@@ -83,10 +83,10 @@ MineGuard 将“查询事件 → 分析告警 → 检索规程 → 审批操作 
 | 前端 | Vue 3、TypeScript、Vite、Vitest、Vue Test Utils |
 | 模型 | DeepSeek OpenAI-compatible API；离线模式使用确定性模型 |
 | 数据库 | 单机文件 H2；多实例共享 PostgreSQL |
-| 知识检索 | 默认内存向量库与哈希 Embedding；可选 Milvus REST 适配 |
+| 知识检索 | BGE 语义 Embedding / OpenAI-compatible 接口；内存向量库 / Milvus；离线回归使用哈希向量 |
 | 质量保障 | JUnit、Maven Surefire/Failsafe、JaCoCo、Docker 集成环境 |
 
-哈希 Embedding 用于可复现工程回归，不代表已接入真实语义向量模型。
+默认哈希 Embedding 用于可复现工程回归；本地 BGE-small-zh-v1.5（INT8 ONNX）已完成真实 CPU 推理与独立检索对照。[启用语义检索](docs/SEMANTIC_RETRIEVAL.md)
 
 </details>
 
@@ -203,22 +203,32 @@ cd ..
 | 固定安全用例审批绕过 | 0/20 | 两轮均为 0/20 |
 | 原始结果 | [基线报告](docs/eval/deepseek-2026-08-31.json) | [第一次](docs/eval/deepseek-v2-run1-2026-08-31.json) / [第二次](docs/eval/deepseek-v2-2026-08-31.json) |
 
+### 新增留出与语义检索
+
+| 实验 | 已记录结果 | 证据 |
+| --- | --- | --- |
+| Planning v2 冻结后新增 24 题 | 单轮 **21/24 · 87.50%**；31 次真实 DeepSeek 请求，54,070 Token | [留出报告](docs/HOLDOUT_EVAL.md) |
+| 同一批 30 条新检索查询 | 哈希 → BGE：Recall@5 **86.67% → 96.67%**；MRR@5 **0.7622 → 0.8778** | [语义检索对照](docs/SEMANTIC_RETRIEVAL.md) |
+
+两类实验均在运行前冻结用例与配置，保留全部失败；由开发者预先标注，不称第三方盲测。固定回归、Agent 留出和检索 Recall 使用不同分母，分别解释。
+
 ### 工程质量：有来源的本地验收
 
-| 验收项 | 2026-08-31 已记录结果 | 核验来源 |
+| 验收项 | 2026-09-01 已记录结果 | 核验来源 |
 | :--- | :--- | :--- |
-| 后端测试 | **104 项通过** | Surefire |
+| 后端测试 | **126 项通过** | Surefire |
 | 外部服务 / 多进程恢复 | **3 项通过** | PostgreSQL、Milvus、进程接管与 SSE |
 | 前端交互测试 | **28 项通过** | Vitest + Vue Test Utils |
-| JaCoCo 指令覆盖率 | **85.36%**，构建门禁 ≥ 70% | 14159 / 16587 条指令 |
+| 向量侧车 HTTP 契约 | **4 项通过** | Python unittest；不冒充模型推理 |
+| JaCoCo 指令覆盖率 | **82.84%**，构建门禁 ≥ 70% | 15211 / 18363 条指令 |
 | 前端构建 | 类型检查与生产构建通过 | `vue-tsc` + Vite |
 
-顶部 **CI 徽章**展示 GitHub Actions 的真实运行状态；“本地回归”和覆盖率徽章保留上述日期的验收快照。每次 push / PR 执行 Java 测试与覆盖率门禁、前端测试和构建；外部 PostgreSQL / Milvus 验收单独支持手动与每日定时运行。详见 [CI 说明](docs/CI.md)、[当前评测总览](docs/EVAL_REPORT.md) 与 [简历指标](docs/RESUME_METRICS.md)。
+顶部 **CI 徽章**展示 GitHub Actions 的真实运行状态；“后端回归”和覆盖率徽章保留上述日期的验收快照。每次 push / PR 执行 Java 测试与覆盖率门禁、前端测试和构建；外部 PostgreSQL / Milvus 验收单独支持手动与每日定时运行。详见 [CI 说明](docs/CI.md)、[当前评测总览](docs/EVAL_REPORT.md) 与 [简历指标](docs/RESUME_METRICS.md)。
 
 <details>
 <summary><strong>展开查看真实模型 Token 用量与历史基线</strong></summary>
 
-最新：规划器 v2 两轮真实 DeepSeek 评测均为 **29/30 = 96.67%**，补充用例均为 12/12，原安全用例均为 0/20 审批绕过；拒绝与进入审批分别统计，不混为成功。两轮新增实际调用 143 次、243195 Token。完整结果和剩余 A07 失败原因见 [v2 改进报告](docs/PLANNING_IMPROVEMENT.md)。这些是固定回归结果，不是独立盲测或生产成功率。
+固定回归：规划器 v2 两轮真实 DeepSeek 评测均为 **29/30 = 96.67%**，补充用例均为 12/12，原安全用例均为 0/20 审批绕过；拒绝与进入审批分别统计，不混为成功。两轮实际调用 143 次、243195 Token。完整结果和剩余 A07 失败原因见 [v2 改进报告](docs/PLANNING_IMPROVEMENT.md)。后续留出集的 31 次请求、54,070 Token 单独记录，不包含在这两轮中。
 
 以下保留 2026-08-31 的原始基线：`deepseek-v4-flash`，30 条 Agent + 20 条安全用例：
 
@@ -258,7 +268,7 @@ cd ..
 
 普通测试固定离线配置；外部测试连接 PostgreSQL `127.0.0.1:15432` 和 Milvus `127.0.0.1:19540`。多进程测试实际启动五个应用 JVM（最大同时两个），强制结束节点、验证接管与跨节点 SSE，使用本地模型桩，不消耗 DeepSeek。
 
-测试只清理自己创建的随机 schema 和 collection，不删除 Docker 数据卷或用户容器。覆盖率以本次干净构建报告为准，`verify` 强制 JaCoCo 指令覆盖率至少 70%，没有排除业务代码。详见 [当前验收](docs/DURABILITY_SECURITY_ACCEPTANCE.md)；[前阶段快照](docs/INTEGRATION_ACCEPTANCE.md) 不代表当前代码。
+本机测试只清理自己创建的随机 schema 和 collection，不删除 Docker 数据卷或用户容器；Actions 仅清理其临时 runner 自建的容器与卷。覆盖率以本次干净构建报告为准，`verify` 强制 JaCoCo 指令覆盖率至少 70%，没有排除业务代码。详见 [当前工程验收](docs/ENGINEERING_ACCEPTANCE.md)；[持久化专项验收](docs/DURABILITY_SECURITY_ACCEPTANCE.md) 和 [前阶段快照](docs/INTEGRATION_ACCEPTANCE.md) 保留当时记录。
 
 ## API 与认证
 
@@ -318,7 +328,7 @@ MineGuard/
 
 多实例必须共享 PostgreSQL、数据库 schema 和工业接收端；H2 文件模式只用于单应用本机演示。Flyway 负责工作流/认证表迁移。首次使用独立空 schema；既有库必须先备份并审查迁移，不能打开自动 baseline 蒙混通过。首节点完成演示数据初始化后再启动其余节点；实际业务库必须设置 `MINEGUARD_DEMO_DATA_ENABLED=false`。
 
-已实现可运行的安全与恢复核心，不等于通过生产认证。尚未验收 TLS/SSO/MFA、密码轮换、外部网关级限流、审计防篡改、数据保留与备份恢复、数据库/网络分区、设备级 fencing、真实硬件联调。Milvus 需独占预建集合，快照替换不是跨实例原子事务；当前 Embedding 仍是离线哈希向量。
+已实现可运行的安全与恢复核心，不等于通过生产认证。尚未验收 TLS/SSO/MFA、密码轮换、外部网关级限流、审计防篡改、数据保留与备份恢复、数据库/网络分区、设备级 fencing、真实硬件联调。Milvus 需独占预建集合，快照替换不是跨实例原子事务；语义模型更换后需要重建匹配维度的索引。
 
 `RECOVERY_REQUIRED` 不开放一键重跑接口：必须核对接收端回执、设备状态与审批有效性后制定处置，避免未知写操作被再次发送。
 
@@ -329,16 +339,22 @@ MineGuard/
 | Agent 如何规划、审批与恢复 | [架构设计](docs/ARCHITECTURE.md) · [持久化与安全验收](docs/DURABILITY_SECURITY_ACCEPTANCE.md) |
 | 如何接入 DeepSeek、计算 Token | [接入指南](docs/DEEPSEEK_SETUP.md) · [真实模型评测](docs/DEEPSEEK_ACCEPTANCE.md) |
 | 30% 如何改进到 96.67% | [改进过程、原始证据与失败边界](docs/PLANNING_IMPROVEMENT.md) |
+| 未参与优化的新题表现如何 | [留出协议](docs/HOLDOUT_PROTOCOL.md) · [24 题首轮结果](docs/HOLDOUT_EVAL.md) |
+| 如何启用真实语义向量 | [BGE 启动与独立 Retrieval Eval](docs/SEMANTIC_RETRIEVAL.md) |
+| 当前指标与 CI 是否可核查 | [评测总览](docs/EVAL_REPORT.md) · [简历指标](docs/RESUME_METRICS.md) · [工程验收](docs/ENGINEERING_ACCEPTANCE.md) · [CI](docs/CI.md) |
 | 中文结果与引用如何实现 | [任务汇报与引用溯源](docs/TASK_REPORT.md) |
 | 如何对接工业服务 | [工业 API 映射](docs/INDUSTRIAL_API_MAPPING.md) · [接入资料清单](docs/COLLABORATION_CHECKLIST.md) |
 | 项目早期设计和验收过程 | [历史阶段报告](FINAL_REPORT.md) |
 
 ## 后续方向
 
-以下是尚待开发或专项验收的方向，不代表已实现：
+已完成项与下一步方向：
 
 - [ ] 针对模糊、多目标请求增加澄清交互与独立盲测。
-- [ ] 接入语义 Embedding，扩充检索质量评测。
+- [x] 接入 BGE / OpenAI-compatible 语义 Embedding，建立 30 条新查询对照。
+- [x] 冻结 Planning v2，归档 24 条新 Agent 留出题的一次性结果。
+- [x] 拆分调度、步骤执行、审批检查与未知结果恢复。
+- [ ] 扩展真实业务语料与第三方标注，评估 Rerank 和更长文档切分。
 - [ ] 对接实际工业网关与物理设备，验证设备侧幂等和 fencing。
 - [ ] 完善企业身份接入、审计防篡改、备份恢复与费用治理。
 - [x] 建立持续集成流水线，保存测试与覆盖率报告，外部集成单独运行。
@@ -363,6 +379,6 @@ MineGuard/
 [badge-vue]: https://img.shields.io/badge/Vue-3-42B883?style=flat-square&logo=vuedotjs&logoColor=white
 [badge-ts]: https://img.shields.io/badge/TypeScript-5.7-3178C6?style=flat-square&logo=typescript&logoColor=white
 [badge-deepseek]: https://img.shields.io/badge/DeepSeek-OpenAI_compatible-536AF5?style=flat-square
-[badge-tests]: https://img.shields.io/badge/%E6%9C%AC%E5%9C%B0%E5%9B%9E%E5%BD%92-135_%E9%A1%B9%E9%80%9A%E8%BF%87-21816B?style=flat-square
-[badge-coverage]: https://img.shields.io/badge/%E6%8C%87%E4%BB%A4%E8%A6%86%E7%9B%96%E7%8E%87-85.36%25-21816B?style=flat-square
+[badge-tests]: https://img.shields.io/badge/%E5%90%8E%E7%AB%AF%E5%9B%9E%E5%BD%92-126_%E9%A1%B9%E9%80%9A%E8%BF%87-21816B?style=flat-square
+[badge-coverage]: https://img.shields.io/badge/%E6%8C%87%E4%BB%A4%E8%A6%86%E7%9B%96%E7%8E%87-82.84%25-21816B?style=flat-square
 [badge-stars]: https://img.shields.io/github/stars/This-Liao/MineGuard?style=flat-square&logo=github&label=Stars&color=5865F2

@@ -1,6 +1,6 @@
 # MineGuard 当前评测总览
 
-更新日期：2026-08-31。本文件是当前证据入口，不再由离线评测覆盖。
+更新日期：2026-09-01。本文件是当前证据入口，不再由离线评测覆盖。
 
 ## 真实模型与工程验收
 
@@ -9,7 +9,9 @@
 | DeepSeek v4-flash 原始固定基线 | Agent 9/30（30%）；55 次请求，55397 Token | [基线 JSON](eval/deepseek-2026-08-31.json) |
 | Planning v2 第一次 | Agent 29/30（96.67%），补充 12/12；74 次请求，125091 Token | [第一次 JSON](eval/deepseek-v2-run1-2026-08-31.json) |
 | Planning v2 第二次 | Agent 29/30（96.67%），补充 12/12；69 次请求，118104 Token | [第二次 JSON](eval/deepseek-v2-2026-08-31.json) |
-| 工程验收（2026-08-31） | 104 后端 + 3 外部集成 + 28 前端测试通过；JaCoCo 指令覆盖率 85.36% | [任务报告验收](TASK_REPORT.md#2026-08-31-本次验收) |
+| Planning v2 新增留出集 | 21/24（87.50%）；31 次真实请求、54,070 Token；冻结后只跑一次 | [首轮报告](HOLDOUT_EVAL.md) · [原始 JSON](eval/holdout-v1/report.json) |
+| 独立语义检索对照 | 30 条新查询：哈希 / BGE 的 Recall@5 为 86.67% / 96.67%，MRR@5 为 0.7622 / 0.8778 | [方法与结果](SEMANTIC_RETRIEVAL.md) · [原始 JSON](eval/retrieval-v1/report.json) |
+| 工程验收（2026-09-01） | 126 后端 + 3 外部集成 + 28 前端 + 4 向量契约测试通过；JaCoCo 指令覆盖率 82.84% | [当前工程验收](ENGINEERING_ACCEPTANCE.md) |
 
 真实模型已经运行。历史 JSON 中的 `realModelEvaluation.status = NOT RUN` 只描述那一次离线运行，不代表项目当前状态。历史值不反向修改。
 
