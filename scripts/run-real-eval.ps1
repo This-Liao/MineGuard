@@ -6,7 +6,8 @@ param(
     [ValidateRange(128, 16384)][int]$MaxOutputTokens = 2048,
     [ValidateSet('deepseek-v4-flash', 'deepseek-v4-pro', 'deepseek-v4-flash-vision-exp')]
     [string]$Model = 'deepseek-v4-flash',
-    [string]$KeyFile = ''
+    [string]$KeyFile = '',
+    [switch]$Holdout
 )
 $ErrorActionPreference = 'Stop'
 if ($MaxCalls -le 0) { throw '尚未授权付费调用。请明确传入本次允许的 -MaxCalls；此参数不是费用金额上限。' }
@@ -14,7 +15,7 @@ $ProjectRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 if ([string]::IsNullOrWhiteSpace($KeyFile)) { $KeyFile = Join-Path $ProjectRoot 'key.txt' }
 $names = @('OPENAI_API_KEY', 'OPENAI_BASE_URL', 'OPENAI_MODEL', 'MINEGUARD_LLM_MAX_CALLS',
     'MINEGUARD_LLM_MAX_OUTPUT_TOKENS', 'MINEGUARD_LLM_TIMEOUT_SECONDS', 'MINEGUARD_LLM_THINKING',
-    'MINEGUARD_EVAL_AGENT_CASES', 'MINEGUARD_EVAL_SAFETY_CASES', 'MINEGUARD_EVAL_SUPPLEMENTAL_CASES')
+    'MINEGUARD_EVAL_AGENT_CASES', 'MINEGUARD_EVAL_SAFETY_CASES', 'MINEGUARD_EVAL_SUPPLEMENTAL_CASES', 'MINEGUARD_EVAL_SUITE')
 $previous = @{}
 foreach ($name in $names) { $previous[$name] = [Environment]::GetEnvironmentVariable($name, 'Process') }
 Push-Location $ProjectRoot
@@ -36,6 +37,7 @@ try {
     $env:MINEGUARD_EVAL_AGENT_CASES = "$AgentCases"
     $env:MINEGUARD_EVAL_SAFETY_CASES = "$SafetyCases"
     $env:MINEGUARD_EVAL_SUPPLEMENTAL_CASES = "$SupplementalCases"
+    $env:MINEGUARD_EVAL_SUITE = if ($Holdout) { 'holdout-v1' } else { 'regression' }
     Write-Host "开始受控评测：$Model，最多 $MaxCalls 次请求；工具只操作本地模拟环境。"
     mvn -q -DskipTests exec:java '-Dexec.mainClass=com.mineguard.eval.RealModelEvalApplication'
     if ($LASTEXITCODE -ne 0) { throw '真实模型评测未完成，请检查独立报告。不要自动重跑，以免重复计费。' }

@@ -32,19 +32,28 @@ public final class RealModelEvalApplication {
         int agentCases = setting("MINEGUARD_EVAL_AGENT_CASES", 3, 1, 30);
         int safetyCases = setting("MINEGUARD_EVAL_SAFETY_CASES", 0, 0, 20);
         int supplementalCases = setting("MINEGUARD_EVAL_SUPPLEMENTAL_CASES", 0, 0, 12);
+        boolean holdout = "holdout-v1".equals(System.getenv("MINEGUARD_EVAL_SUITE"));
+        var frozen = holdout ? HoldoutGuard.verify(Path.of(""), new ObjectMapper()) : null;
+        Path agentPath = holdout ? HoldoutGuard.CASES : Path.of("data/eval/agent_cases.json");
+        if (holdout) { agentCases = 24; safetyCases = 0; supplementalCases = 0; }
         String runId = Instant.now().toString().replace(':', '-') + "-" + UUID.randomUUID();
         Path output = Path.of("data/runtime/real-model-eval", runId).toAbsolutePath();
         Files.createDirectories(output);
         Map<String, Object> report = new LinkedHashMap<>();
         report.put("runId", runId);
-        report.put("mode", "Real Model Evaluation");
+        report.put("mode", holdout ? "Prospective Holdout Evaluation" : "Real Model Evaluation");
+        if (holdout) {
+            report.put("holdoutManifest", frozen);
+            report.put("holdoutManifestSha256", HoldoutGuard.textHash(HoldoutGuard.MANIFEST));
+            report.put("developerVisible", true);
+        }
         report.put("startedAt", Instant.now());
         report.put("requestedAgentCases", agentCases);
         report.put("requestedSafetyCases", safetyCases);
         report.put("requestedSupplementalCases", supplementalCases);
         report.put("planningContract", PlanningContract.VERSION);
         report.put("promptSha256", Digests.sha256(PlanningContract.SYSTEM_PROMPT));
-        report.put("agentCasesSha256", Digests.sha256(Files.readString(Path.of("data/eval/agent_cases.json"))));
+        report.put("agentCasesSha256", Digests.sha256(Files.readString(agentPath)));
         report.put("supplementalCasesSha256", Digests.sha256(Files.readString(Path.of("data/eval/agent_supplemental_cases.json"))));
         report.put("toolEnvironment", "合成事件数据、内存向量库、MockIndustrialGateway；不代表真实工业验收");
         report.put("baseline", "NOT RUN：现有关键词静态基线不参与真实模型端到端对比");
@@ -60,13 +69,17 @@ public final class RealModelEvalApplication {
             model = (OpenAiCompatibleAgentModelClient) context.getBean(AgentModelClient.class);
             MineGuardProperties.Llm config = context.getBean(MineGuardProperties.class).llm();
             if (config.maxCalls() <= 0) throw new IllegalStateException("尚未授权模型调用次数");
+            if (holdout) {
+                HoldoutGuard.requireFrozenModel(config, frozen);
+                HoldoutGuard.claimAttempt(Path.of(""), runId);
+            }
             report.put("provider", model.providerName());
             report.put("maxOutputTokens", config.maxOutputTokens());
             report.put("requestTimeoutSeconds", config.requestTimeoutSeconds());
             report.put("thinking", config.thinking() == null ? "" : config.thinking());
             // 规划最多包含一次修复；评测等待窗口应覆盖两次完整的请求超时。
             Duration timeout = Duration.ofSeconds(2L * config.requestTimeoutSeconds() + 15);
-            report.put("agent", context.getBean(AgentEvaluator.class).evaluate(Path.of("data/eval/agent_cases.json"), agentCases, timeout));
+            report.put("agent", context.getBean(AgentEvaluator.class).evaluate(agentPath, agentCases, timeout));
             report.put("usageAfterAgent", usageTotals(model));
             report.put("safety", context.getBean(SafetyEvaluator.class).evaluate(Path.of("data/eval/safety_cases.json"), safetyCases, timeout));
             report.put("usageAfterSafety", usageTotals(model));
@@ -97,7 +110,7 @@ public final class RealModelEvalApplication {
         return new String[]{"--spring.profiles.active=real-eval", "--mineguard.llm.provider=openai-compatible",
                 "--spring.datasource.url=jdbc:h2:mem:mineguard_real_eval;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE",
                 "--spring.datasource.driver-class-name=org.h2.Driver", "--spring.datasource.username=sa", "--spring.datasource.password=",
-                "--mineguard.vector-store.type=in-memory", "--mineguard.knowledge-path=data/knowledge",
+                "--mineguard.vector-store.type=in-memory", "--mineguard.embedding.provider=hashing", "--mineguard.knowledge-path=data/knowledge",
                 "--mineguard.industrial.type=mock", "--mineguard.runtime.scheduler-enabled=true",
                 "--mineguard.demo-data-enabled=true",
                 "--mineguard.trace-path=" + output.resolve("traces")};
