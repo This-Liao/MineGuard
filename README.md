@@ -19,7 +19,7 @@
 [![指令覆盖率：85.36%][badge-coverage]](docs/TASK_REPORT.md#2026-08-31-本次验收)
 [![GitHub Stars][badge-stars]](https://github.com/This-Liao/MineGuard/stargazers)
 
-[快速开始](#快速开始) · [核心能力](#核心能力) · [任务体验](#任务体验) · [评测结果](#评测与质量) · [文档导航](#文档导航) · [反馈问题](https://github.com/This-Liao/MineGuard/issues)
+[操作演示](#实际操作演示) · [快速开始](#快速开始) · [核心能力](#核心能力) · [评测结果](#评测与质量) · [文档导航](#文档导航) · [反馈问题](https://github.com/This-Liao/MineGuard/issues)
 
 由 [**This-Liao**](https://github.com/This-Liao) 开发与维护
 
@@ -32,6 +32,34 @@
 MineGuard 将“查询事件 → 分析告警 → 检索规程 → 审批操作 → 执行核验”串成可观察、可测试、可恢复的 Agent 工作流。模型负责提出计划，后端负责权限校验、工具执行与安全边界；每条结果都能回到对应的数据或知识来源。
 
 适合学习和展示 **Java Agent 架构、RAG、工程化评测、RBAC 与分布式任务恢复**，也可作为工业业务接入的开发起点。
+
+## 实际操作演示
+
+### 01 · 从一句话到可追溯结果
+
+提交中文任务，观察规划与执行状态，展开三步计划，再查看自然语言分析报告。
+
+![实际操作：提交只读分析任务，查看执行计划与中文结果](docs/assets/demos/agent-task.gif)
+
+<details>
+<summary><strong>02 · 点击引用，回到知识原文与统计回执（展开观看）</strong></summary>
+
+点击报告中的 `[3]`，查看文档编号、片段编号和原文；再切换到统计引用，核对查询条件与事件分布。
+
+![实际操作：点击知识引用并核对告警统计的原始回执](docs/assets/demos/evidence-trace.gif)
+
+</details>
+
+<details>
+<summary><strong>03 · 查看严格成功率、Token 用量与逐条评测（展开观看）</strong></summary>
+
+查看已归档的 DeepSeek 评测、原始基线对比和 Token 用量，展开固定用例明细，保留未通过项。
+
+![实际操作：查看真实模型评测归档、Token 指标与逐条结果](docs/assets/demos/evaluation-dashboard.gif)
+
+</details>
+
+*录于 2026-08-31，本地工作台实际操作关键帧，等待时间已压缩；动图时长不代表任务耗时。[录制说明](docs/assets/demos/README.md)*
 
 ## 核心能力
 
