@@ -56,6 +56,10 @@ public class ToolRegistry {
             trace(context, name, args, result);
             return result;
         } catch (Exception ex) {
+            if (ex instanceof com.mineguard.device.IndustrialOutcomeUnknownException) {
+                ToolResult result = ToolResult.failure("OUTCOME_UNKNOWN", "工业写请求结果未知，禁止自动重试").withElapsed(elapsed(started));
+                trace(context, name, args, result); return result;
+            }
             ToolResult result = ToolResult.failure("TOOL_EXECUTION_ERROR", ex.getMessage()).withElapsed(elapsed(started));
             trace(context, name, args, result);
             return result;

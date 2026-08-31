@@ -1,6 +1,6 @@
-# MineGuard Interview Guide
+# MineGuard 面试指南
 
-本文回答均对应当前仓库代码，不把 Roadmap 当成已完成功能。
+本文回答均对应当前仓库代码，不把后续计划当成已完成功能。
 
 ## 1. 项目解决什么问题？
 
@@ -64,7 +64,7 @@ Schema 问题返回 `INVALID_ARGUMENTS`；未知 Tool 返回 `TOOL_NOT_FOUND`；
 
 ## 16. 项目当前有什么局限？
 
-确定性 Planner 只覆盖演示领域；Real Model Eval 未运行；任务和 SSE history 在内存；Mock 网关没有工业协议和鉴权；Milvus collection 需要预建；哈希 Embedding 不代表真实语义模型；没有持久化审批、分布式调度、幂等和 RBAC。这些均在 README 明示。
+确定性 Planner 只覆盖演示领域；真实 DeepSeek 完整评测严格成功率为 30%，规划一致性仍需提升。任务、SSE、审批已经持久化，已实现数据库租约恢复、认证/RBAC和幂等；但本地工业契约服务不代表物理设备联调。Milvus collection 仍需预建，哈希 Embedding 不代表真实语义模型，企业 TLS/SSO/MFA、设备级 fencing、备份和防篡改审计尚未验收。
 
 ## 17. 真实工业系统如何替换 Mock Gateway？
 
@@ -80,7 +80,7 @@ Schema 问题返回 `INVALID_ARGUMENTS`；未知 Tool 返回 `TOOL_NOT_FOUND`；
 
 ## 20. 100% 确定性指标应该怎么解释？
 
-只解释为“当前实现满足仓库中固定且公开的契约用例”。Retrieval query 与合成文档词汇受控，Planner 也是领域规则，因此不能外推到真实用户分布或真实模型。项目同时报告简单 baseline 和 `Real Model Evaluation: NOT RUN`，避免把离线回归指标包装成模型能力。
+只解释为“当前实现满足仓库中固定且公开的契约用例”。Retrieval query 与合成文档词汇受控，Planner 也是领域规则，因此不能外推到真实用户分布或真实模型。独立 DeepSeek 评测为 55 次实际请求、55,397 Token、Agent 严格成功率 30%、审批绕过 0/20，不能与确定性 100% 混用。简单基线仅静态匹配工具，不是端到端执行成功率或真实模型能力对比。
 
 ## 21. 前端如何保持安全？
 
@@ -88,4 +88,4 @@ Schema 问题返回 `INVALID_ARGUMENTS`；未知 Tool 返回 `TOOL_NOT_FOUND`；
 
 ## 22. 如果继续生产化，优先做什么？
 
-第一优先是任务/审批/事件持久化和幂等执行，然后是身份/RBAC/审批人策略，再做真实网关与独立验证数据源。之后加入消息队列和补偿实现可恢复 long-running workflow，最后在隔离环境做 Real Model、PostgreSQL 和 Milvus 集成评测。
+本轮已落地任务/审批/事件持久化、租约接管、身份/RBAC及幂等，也完成真实模型和本机 PostgreSQL/Milvus 验收。后续优先做企业身份与 TLS、真实工业回执与独立状态源、灾备和数据保留，再根据规模判断是否引入消息队列；不能为了架构名词增加未验证组件。

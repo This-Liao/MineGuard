@@ -20,6 +20,6 @@ public class StopDetectionTaskTool implements Tool {
     }
     @Override public ToolResult execute(ToolContext context, Map<String, Object> args) {
         return ToolResult.success(gateway.stopDetectionTask(
-                ToolArguments.string(args, "cameraId"), ToolArguments.string(args, "algorithm")));
+                ToolArguments.string(args, "cameraId"), ToolArguments.string(args, "algorithm"), context.operationKey()));
     }
 }

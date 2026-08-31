@@ -1,8 +1,12 @@
 spring:
+  task:
+    scheduling:
+      pool:
+        size: 4
   application:
     name: mineguard
   datasource:
-    url: ${DATABASE_URL:jdbc:h2:mem:mineguard;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE}
+    url: ${DATABASE_URL:jdbc:h2:file:./data/runtime/mineguard;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE}
     username: ${DATABASE_USERNAME:sa}
     password: ${DATABASE_PASSWORD:}
     driver-class-name: ${DATABASE_DRIVER:org.h2.Driver}
@@ -11,20 +15,42 @@ spring:
       write-dates-as-timestamps: false
 
 server:
+  address: ${BIND_ADDRESS:127.0.0.1}
   port: ${PORT:8080}
 
 mineguard:
+  demo-data-enabled: ${MINEGUARD_DEMO_DATA_ENABLED:true}
+  industrial:
+    type: ${MINEGUARD_INDUSTRIAL_TYPE:mock}
+    base-url: ${MINEGUARD_INDUSTRIAL_BASE_URL:http://127.0.0.1:18081}
+    token: ${MINEGUARD_INDUSTRIAL_TOKEN:}
+    write-cameras: ${MINEGUARD_WRITE_CAMERAS:camera-03,camera-08,camera-17}
+    write-algorithms: ${MINEGUARD_WRITE_ALGORITHMS:intrusion_detection,no_helmet,personnel_violation}
   llm:
     provider: ${MINEGUARD_LLM_PROVIDER:deterministic}
     base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}
     api-key: ${OPENAI_API_KEY:}
     model: ${OPENAI_MODEL:gpt-4o-mini}
+    # 默认不允许调用；修复请求和失败请求同样占用额度。
+    max-calls: ${MINEGUARD_LLM_MAX_CALLS:0}
+    max-output-tokens: ${MINEGUARD_LLM_MAX_OUTPUT_TOKENS:2048}
+    request-timeout-seconds: ${MINEGUARD_LLM_TIMEOUT_SECONDS:60}
+    # 留空适配通用接口；DeepSeek 评测脚本显式设置 disabled。
+    thinking: ${MINEGUARD_LLM_THINKING:}
   vector-store:
     type: ${MINEGUARD_VECTOR_STORE:in-memory}
     milvus-uri: ${MILVUS_URI:http://localhost:19530}
   knowledge-path: ${MINEGUARD_KNOWLEDGE_PATH:data/knowledge}
   trace-path: ${MINEGUARD_TRACE_PATH:data/runtime/traces}
   workflow-executor-threads: ${MINEGUARD_WORKFLOW_THREADS:4}
+  runtime:
+    scheduler-enabled: ${MINEGUARD_SCHEDULER_ENABLED:true}
+    node-id: ${MINEGUARD_NODE_ID:local}
+    lease-seconds: ${MINEGUARD_LEASE_SECONDS:30}
+    approval-seconds: ${MINEGUARD_APPROVAL_SECONDS:600}
+    session-seconds: ${MINEGUARD_SESSION_SECONDS:3600}
+    bootstrap-username: ${MINEGUARD_BOOTSTRAP_USERNAME:}
+    bootstrap-password: ${MINEGUARD_BOOTSTRAP_PASSWORD:}
 
 logging:
   level:

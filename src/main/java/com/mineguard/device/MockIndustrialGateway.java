@@ -1,6 +1,7 @@
 package com.mineguard.device;
 
 import org.springframework.stereotype.Component;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Component
+@ConditionalOnProperty(name = "mineguard.industrial.type", havingValue = "mock", matchIfMissing = true)
 public class MockIndustrialGateway implements IndustrialGateway {
     private final Map<String, DeviceStatus> devices = new ConcurrentHashMap<>();
     private final Map<String, DetectionTask> tasks = new ConcurrentHashMap<>();

@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
-/** A documented deterministic baseline: one keyword-selected tool, no multi-step planning, ranking, approval, or verification. */
+/** 简化确定性基线：仅静态匹配关键词选择的单个工具，不执行工具、审批或验证。 */
 @Component
 public class BasicAgentBaselineEvaluator {
     private final ObjectMapper mapper;

@@ -12,9 +12,11 @@ public enum AgentTaskState {
     EXECUTING,
     VERIFYING,
     COMPLETED,
-    FAILED;
+    FAILED,
+    RECOVERY_REQUIRED;
 
     public boolean canTransitionTo(AgentTaskState next) {
+        if (next == RECOVERY_REQUIRED && !terminal()) return true;
         return allowed().contains(next);
     }
 
@@ -27,9 +29,9 @@ public enum AgentTaskState {
             case WAITING_APPROVAL -> EnumSet.of(EXECUTING, COMPLETED, FAILED);
             case EXECUTING -> EnumSet.of(VERIFYING, FAILED);
             case VERIFYING -> EnumSet.of(COMPLETED, FAILED);
-            case COMPLETED, FAILED -> EnumSet.noneOf(AgentTaskState.class);
+            case COMPLETED, FAILED, RECOVERY_REQUIRED -> EnumSet.noneOf(AgentTaskState.class);
         };
     }
 
-    public boolean terminal() { return this == COMPLETED || this == FAILED; }
+    public boolean terminal() { return this == COMPLETED || this == FAILED || this == RECOVERY_REQUIRED; }
 }

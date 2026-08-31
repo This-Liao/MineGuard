@@ -9,9 +9,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.Instant;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.dao.DuplicateKeyException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+    @ExceptionHandler(AccessDeniedException.class)
+    ResponseEntity<Map<String, Object>> denied(AccessDeniedException ex) { return response(HttpStatus.FORBIDDEN, "FORBIDDEN", ex.getMessage()); }
+    @ExceptionHandler(BadCredentialsException.class)
+    ResponseEntity<Map<String, Object>> unauthorized(BadCredentialsException ex) { return response(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "账号或凭据无效，请稍后重试"); }
+    @ExceptionHandler(DuplicateKeyException.class)
+    ResponseEntity<Map<String, Object>> duplicate(DuplicateKeyException ex) { return response(HttpStatus.CONFLICT, "CONFLICT", "资源已经存在"); }
     @ExceptionHandler(NoSuchElementException.class)
     ResponseEntity<Map<String, Object>> notFound(NoSuchElementException ex) {
         return response(HttpStatus.NOT_FOUND, "NOT_FOUND", ex.getMessage());
@@ -19,7 +28,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler({IllegalArgumentException.class, MethodArgumentNotValidException.class})
     ResponseEntity<Map<String, Object>> badRequest(Exception ex) {
-        return response(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", ex.getMessage());
+        return response(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", ex instanceof MethodArgumentNotValidException ? "请求字段未通过校验" : ex.getMessage());
     }
 
     @ExceptionHandler(IllegalStateException.class)

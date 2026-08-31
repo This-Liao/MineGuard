@@ -1,43 +1,50 @@
-# MineGuard Implementation Plan
+# MineGuard 实施计划
 
-## Delivery principles
+2026-08-31 增量进展：任务/SSE 数据库持久化、数据库租约与恢复、认证/RBAC、审批人策略、幂等、工业 HTTP 契约适配和真实 DeepSeek 评测已落地。当前验证与剩余部署差距以 `docs/DURABILITY_SECURITY_ACCEPTANCE.md` 为准；下面保留初始路线。
 
-- Build a runnable engineering project rather than a chat-only demo.
-- Keep LLM planning advisory and make workflow transitions, tool validation, approval, and execution deterministic in backend code.
-- Default to an offline, reproducible profile using H2, deterministic planning/embeddings, an in-memory vector store, and a mock industrial gateway.
-- Keep PostgreSQL, Milvus, and OpenAI-compatible services behind replaceable interfaces/configuration.
-- Generate every reported metric by executable evaluation code. Mark unavailable real-model results as `NOT RUN`.
-- Use only synthetic, fixed-seed demo data and label it clearly.
+## 交付原则
 
-## P0 — runnable backend and safety core
+- 构建可运行的工程项目，而不只是聊天接口。
+- 大模型只提出候选计划；状态迁移、工具校验、审批与执行由后端确定性代码控制。
+- 默认使用 H2、确定性规划与向量化、内存向量库和模拟工业网关，保证离线可复现。
+- PostgreSQL、Milvus 和 OpenAI-compatible 服务通过接口与配置替换。
+- 所有对外指标来自实际命令和评测输出；未运行的真实模型结果标为“未运行（NOT RUN）”。
+- 只使用固定种子的合成演示数据，并明确声明数据性质。
+- README、设计文档、评测说明及解释性代码注释使用中文；类名、接口路径、JSON 字段、指标标识和必要的数据声明保持原样。
 
-1. Bootstrap Java 21 / Spring Boot / Maven project and configuration profiles.
-2. Implement domain models, fixed-seed safety-event repository, and mock industrial gateway.
-3. Implement validated tool abstraction, schemas, registry, timing/error handling, and required tools.
-4. Implement knowledge loading, chunking, embeddings, in-memory/Milvus vector-store implementations, retrieval, and evidence.
-5. Implement structured planning with validation and one repair attempt.
-6. Implement task state machine, workflow orchestration, backend-enforced human approval, execution verification, structured results, and observable traces.
-7. Implement REST endpoints and SSE task event streams.
-8. Cover the state machine, tools, RAG, approval enforcement, workflow, controllers, and SSE with tests.
+## P0：可运行后端与安全核心
 
-## P1 — evaluation and documentation
+1. 建立 Java 21 / Spring Boot / Maven 工程与环境配置。
+2. 实现领域模型、固定种子安全事件仓储和模拟工业网关。
+3. 实现工具抽象、JSON Schema、注册表、耗时统计、异常处理与所需工具。
+4. 实现知识加载、分块、向量化、内存/Milvus 向量库、检索和证据。
+5. 实现结构化规划、输出校验与一次修复重试。
+6. 实现任务状态机、工作流编排、后端人工审批、执行验证、结构化结果与可观察追踪。
+7. 实现 REST 接口和 SSE 任务事件流。
+8. 测试状态机、工具、RAG、审批强制、工作流、控制器与 SSE。
 
-1. Add at least 30 retrieval cases, 30 agent cases, and 20 adversarial safety cases.
-2. Implement deterministic retrieval, agent, safety, and baseline evaluation.
-3. Add Windows and Unix one-command evaluation scripts.
-4. Generate `docs/eval/latest.json`, `docs/eval/retrieval-latest.json`, `docs/EVAL_REPORT.md`, and `docs/RESUME_METRICS.md` from actual runs.
-5. Write README, architecture decisions, interview guide, API examples, and limitations.
+## P1：评测与文档
 
-## P2 — demonstrable web UI
+1. 加入至少 30 条检索用例、30 条 Agent 用例和 20 条对抗安全用例。
+2. 实现确定性检索、Agent、安全和简化基线评测，并明确静态评分与执行指标的区别。
+3. 提供 Windows 与 Unix 系统的一键评测脚本。
+4. 基于实际运行生成 `docs/eval/latest.json`、`docs/eval/retrieval-latest.json`、`docs/EVAL_REPORT.md` 和 `docs/RESUME_METRICS.md`。
+5. 编写中文 README、架构决策、面试指南、接口示例与局限说明。
 
-1. Build a lightweight Vue 3 + TypeScript + Vite application.
-2. Provide Agent Console, live workflow/SSE timeline, tool calls, evidence, approval panel, task history/detail, and evaluation dashboard.
-3. Build the production frontend bundle as part of final verification.
+## P2：可演示前端
 
-## Final acceptance
+1. 构建轻量 Vue 3 + TypeScript + Vite 应用。
+2. 提供 Agent 控制台、实时工作流/SSE 时间线、工具调用、证据、审批面板、任务历史/详情与评测看板。
+3. 将前端生产构建纳入最终验证。
 
-1. Run clean backend build and the full unit/integration test suite.
-2. Run retrieval, agent, baseline, and safety evaluations.
-3. Run frontend production build.
-4. Verify all README/report metrics against generated artifacts.
-5. Generate `FINAL_REPORT.md`, inspect the complete diff, initialize/commit local Git, and confirm a clean working tree.
+## 阶段验收
+
+1. 执行后端干净构建及完整单元/集成测试。
+2. 运行检索、Agent、简化基线和安全评测。
+3. 执行前端生产构建。
+4. 对照生成产物检查 README 与报告中的指标。
+5. 生成 `FINAL_REPORT.md`，检查完整差异，完成本地 Git 提交并确认工作树状态。
+
+## 下一阶段协作
+
+真实模型、外部数据库、持久化调度、权限与真实工业接入所需资料，见 [协作接入清单](docs/COLLABORATION_CHECKLIST.md)。这些事项属于待实施能力，不因本计划描述而视为已完成。

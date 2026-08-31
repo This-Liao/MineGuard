@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 @Component
+@org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name = "mineguard.demo-data-enabled", havingValue = "true", matchIfMissing = true)
 public class DemoDataSeeder {
     public static final long SEED = 20260831L;
     public static final int EVENT_COUNT = 420;
@@ -24,7 +25,8 @@ public class DemoDataSeeder {
 
     @PostConstruct
     void seed() {
-        if (repository.count() == EVENT_COUNT) return;
+        // 演示初始化不能因生产数据量不同而覆盖已有记录。
+        if (repository.count() > 0) return;
         Random random = new Random(SEED);
         String[] areas = {"1号采区", "2号采区", "3号采区", "主运输巷", "通风机房"};
         EventType[] types = EventType.values();

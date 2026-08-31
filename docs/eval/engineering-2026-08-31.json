@@ -1,0 +1,83 @@
+{
+  "date": "2026-08-31",
+  "command": "scripts/run-external-it.ps1 -> mvn -q -Pexternal-it clean verify",
+  "status": "PASSED",
+  "coverageExclusionsAdded": false,
+  "childJvmCoverageIncluded": false,
+  "surefire": {
+    "tests": 82,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "failsafe": {
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "coverage": [
+    {
+      "type": "INSTRUCTION",
+      "covered": 12279,
+      "missed": 2293,
+      "percent": 84.26
+    },
+    {
+      "type": "BRANCH",
+      "covered": 729,
+      "missed": 415,
+      "percent": 63.72
+    },
+    {
+      "type": "LINE",
+      "covered": 1602,
+      "missed": 267,
+      "percent": 85.71
+    },
+    {
+      "type": "COMPLEXITY",
+      "covered": 726,
+      "missed": 421,
+      "percent": 63.3
+    },
+    {
+      "type": "METHOD",
+      "covered": 499,
+      "missed": 66,
+      "percent": 88.32
+    },
+    {
+      "type": "CLASS",
+      "covered": 124,
+      "missed": 6,
+      "percent": 95.38
+    }
+  ],
+  "distributed": {
+    "planningCrashRecoveryMs": 6366,
+    "sseReplayCount": 19,
+    "finishedAt": "2026-08-31T06:54:24.811994700Z",
+    "industrial": "本地 HTTP 契约服务，不连接物理设备",
+    "database": "PostgreSQL",
+    "applicationJvmCount": 5,
+    "eventCount": 21,
+    "model": "本地确定性 HTTP 桩，不是 DeepSeek",
+    "duplicateCommandsDuringRecovery": 0,
+    "status": "PASSED"
+  },
+  "evidenceHashes": [
+    {
+      "file": "jacoco.xml",
+      "sha256": "5639FA2C536B2FE62317AA5EAECDFE53E6632B94C56FC70BB21F714D07863ED3"
+    },
+    {
+      "file": "TEST-com.mineguard.integration.ExternalWorkflowIT.xml",
+      "sha256": "784460A2CC4974024A60FD7827F9F1436523A3D500F687861809CE3A82DB5F64"
+    },
+    {
+      "file": "deepseek-2026-08-31.json",
+      "sha256": "4BA92BB9CACB557B26DFEF0F35B3EF7627E6AB41329364DD8AF4F46684B6DEC1"
+    }
+  ]
+}

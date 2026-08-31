@@ -20,7 +20,7 @@ class TraceRecorderIntegrationTest {
     void recordsObservableWorkflowWithoutHiddenReasoning() throws Exception {
         AgentTask task = workflow.create("查询安全帽 PPE 检查规范");
         long deadline = System.nanoTime() + Duration.ofSeconds(8).toNanos();
-        while (!task.getState().terminal() && System.nanoTime() < deadline) Thread.sleep(10);
+        while (!task.getState().terminal() && System.nanoTime() < deadline) { task.refreshFrom(workflow.get(task.getTaskId())); Thread.sleep(10); }
         assertThat(task.getState()).isEqualTo(AgentTaskState.COMPLETED);
         TraceRecorder.TraceRunView trace = traces.get(task.getTaskId()).orElseThrow();
         assertThat(trace.stateTransitions()).isNotEmpty();

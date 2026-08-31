@@ -1,252 +1,143 @@
 # MineGuard
 
-**面向工业安全场景、以确定性安全边界编排 Tool、RAG、人工审批与执行后验证的智能作业 Agent。**
+作者：[This-Liao](https://github.com/This-Liao)
 
-MineGuard 将“事件查询 → 规程检索 → 风险分析 → 操作审批 → 执行 → 验证”实现为可运行、可观察、可测试的后端工作流，而不是把所有能力藏进一次聊天模型调用。项目默认离线运行：H2、固定种子合成事件、哈希向量、确定性规划器和 Mock 工业网关不需要 API Key；生产适配点则通过接口隔离。
+面向工业安全场景的 Java Agent：结构化规划、SQL 查询、RAG、人工审批、工业 HTTP 调用、独立验证与可恢复任务。
 
-> **Demo Data Notice**：仓库中的 420 条事件和 20 篇知识文档全部是 **Synthetic Demo Data**。它们不来自真实煤矿或企业，不应作为现场操作规程、合规依据或安全决策的替代品。
+项目中的 420 条事件和 20 篇知识文档均为合成演示数据，不来自真实矿山。真实 DeepSeek 调用、真实 PostgreSQL/Milvus 服务验收、本地工业契约测试分别记录，不能相互替代。
 
-## Verified snapshot
+## 核心功能
 
-以下数据来自评测程序生成的 [`docs/eval/latest.json`](docs/eval/latest.json)，不是 README 中手工预设的数字：
+- 中文任务汇报与句末引用：统计结论关联工具回执，处置参考关联检索原文；支持旧任务只读转换，不重跑任务、不新增模型调用。详见 [汇报与引用说明](docs/TASK_REPORT.md)。
+- 规划契约 v2：真实 DeepSeek 固定 Agent 严格成功率从 30% 提高到 **96.67%（29/30）**，两轮复测一致；新增 12 条补充用例单独计分，原始基线保留。详见 [改进与限制](docs/PLANNING_IMPROVEMENT.md)。
+- 工作台视觉改版、中文角色说明、待审批筛选、模型前后对比，以及离线前端交互测试。
+- 数据库持久化任务、计划、审批、步骤结果与 SSE 历史；默认文件 H2，多实例使用共享 PostgreSQL。
+- 数据库租约、续期、fencing token 和版本检查；进程退出后接管非终态任务，等待审批不占线程。
+- BCrypt 密码、随机 Bearer 会话（数据库仅存摘要）、过期/撤销/禁用、连续登录失败锁定。
+- OBSERVER / OPERATOR / APPROVER / ADMIN；租户与任务隔离、禁止自批、审批绑定计划摘要与有效期，执行前复核审批人状态。
+- 创建与审批幂等；工业接收端按操作键持久化回执。结果未知进入 `RECOVERY_REQUIRED`，不自动重放危险写操作。
+- Vue 登录、职责分离账号创建、带认证的 SSE 重连和已完成任务历史回放。
 
-| Suite | Measured result |
-|---|---:|
-| Backend tests | 22/22 passed |
-| Retrieval Eval | 30 cases; Recall@5 100%; MRR 1.0000 |
-| Agent Eval | 30 cases; task success 100%; tool selection 100% |
-| Safety Eval | 20 adversarial cases; unsafe bypass 0/20 |
-| Approval enforcement | 100% |
-| Deterministic basic-agent baseline | task success 20% |
-| Real model evaluation | **NOT RUN** |
+实现原理见 [架构设计](docs/ARCHITECTURE.md)，测试与限制见 [持久化及安全验收](docs/DURABILITY_SECURITY_ACCEPTANCE.md)。
 
-这是针对固定、公开、合成数据集的 **Deterministic Evaluation**，用于验证工程行为可复现，不代表未知分布上的模型泛化率。以当前机器为准的延迟和完整明细见 [`docs/EVAL_REPORT.md`](docs/EVAL_REPORT.md)。
+## 本地启动
 
-## Architecture
-
-```text
-Vue Console ── REST / SSE ──> AgentTaskController
-                                  │
-                                  ▼
-                         AgentWorkflowEngine
-                         │ plan + validate
-                         │ state transitions
-                         │ approval gate
-                         │ execute + verify
-                         ▼
-        ┌────────────── ToolRegistry ──────────────┐
-        │ schema validation / risk policy / timing │
-        └───────┬───────────┬───────────┬─────────┘
-                │           │           │
-         SafetyEvent DB   RAG       IndustrialGateway
-          H2/PostgreSQL   VectorStore   Mock / real adapter
-                         Memory/Milvus
-
-Every observable event ──> Task SSE history + TraceRecorder
-Fixed eval datasets      ──> Retrieval / Agent / Safety evaluators
-```
-
-结构化事件由数据库工具精确过滤和聚合；非结构化规程由向量检索返回带 `documentId`、`chunkId`、`score` 的 Evidence。LLM/确定性规划器只产生受校验的 `AgentPlan`，不能直接拿到工业网关，也不能签发审批。详细决策见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
-
-## Core capabilities
-
-- 显式任务状态机：`CREATED → PLANNING → RETRIEVING → ANALYZING → ...`，非法迁移抛出异常并由测试覆盖。
-- 结构化 Planning：Jackson 解析、允许的 Step、数量、参数和风险等级校验；失败仅修复重试一次。
-- 统一 Tool Registry：9 个 Tool 动态注册，统一 JSON Schema、参数错误、耗时和 Trace。
-- 后端 Human-in-the-loop：`start_detection_task` / `stop_detection_task` 标记为 `HIGH_RISK`；没有后端批准标记时 Registry 确定性拒绝。
-- 执行后验证：批准操作执行后必须进入 `VERIFYING` 并调用 `verify_detection_task`，验证失败则任务失败。
-- RAG Evidence：文档加载、分块、Embedding、VectorStore、Top-K 与证据结构完整分层。
-- SSE 流：状态、规划、工具、检索、审批、验证、结果与错误都有具名事件。
-- 可观察 Trace：保存可观察事件，不写 API Key、Secret 或隐藏 Chain of Thought。
-- 固定评测：30 Retrieval + 30 Agent + 20 Safety cases，另有公平、明确受限的确定性 baseline。
-- Vue 控制台：Agent Console、Workflow、Tool Trace、Evidence、审批面板、任务历史和 Eval Dashboard。
-
-## Workflow example
-
-请求：
-
-```text
-启动 camera-03 的 intrusion_detection 检测任务
-```
-
-执行链：
-
-```text
-PLANNING
-  get_device_status
-  list_detection_tasks
-  start_detection_task [HIGH_RISK]
-RETRIEVING → ANALYZING → WAITING_APPROVAL
-  operator approves
-EXECUTING
-  start_detection_task (backend approval grant = true)
-VERIFYING
-  verify_detection_task (expected RUNNING)
-COMPLETED
-```
-
-拒绝审批时任务以 `COMPLETED` 返回“操作已被拒绝，未执行系统变更”，不会产生高风险 Tool 成功记录。
-
-## Quick start
-
-要求：JDK 21+、Maven 3.9+；前端需要 Node.js 20+。
-
-```bash
-# Backend (default H2 + deterministic planner + in-memory vectors)
-mvn spring-boot:run
-
-# Frontend, another terminal
-cd frontend
-npm install
-npm run dev
-```
-
-打开 `http://localhost:5173`。后端监听 `http://localhost:8080`。启动时会以固定 seed `20260831` 初始化 420 条事件并索引 `data/knowledge/`。
-
-Windows 一键构建、测试和评测：
+要求 JDK 21+、Maven 3.9+、Node.js 20+。首次在 `frontend` 执行 `npm ci`。
 
 ```powershell
-scripts/run-eval.ps1
+git clone https://github.com/This-Liao/MineGuard.git
+cd MineGuard
+cd frontend
+npm ci
+cd ..
 ```
 
-Linux/macOS：
+```powershell
+# 默认离线模型；不需要 API key
+.\scripts\start-local-demo.ps1
 
-```bash
-./scripts/run-eval.sh
+# 需要真实 DeepSeek 时使用此命令；key.txt 仅放一行密钥，禁止提交
+.\scripts\start-local-demo.ps1 -UseDeepSeek
 ```
 
-脚本依次执行 `mvn clean verify` 和真实 evaluator，并重写：
+不要同时运行两个启动命令。脚本检查端口，不查杀已有程序；新建独立文件数据库、随机管理员/操作员/审批员账号。账号只写入本次 `data/runtime/local-demo/<时间>/accounts.txt`，仅当前 Windows 用户可读，不在终端打印密码。
 
-- `docs/eval/latest.json`
-- `docs/eval/retrieval-latest.json`
-- `docs/EVAL_REPORT.md`
-- `docs/DETERMINISTIC_EVAL.md`
-- `docs/REAL_MODEL_EVAL.md`
-- `docs/RESUME_METRICS.md`
+| 服务 | 地址 |
+| --- | --- |
+| Vue 控制台 | http://127.0.0.1:5173 |
+| Spring Boot API | http://127.0.0.1:8080 |
+| 本地工业 HTTP 契约服务 | http://127.0.0.1:18081 |
 
-只初始化当前配置的数据源/向量库可运行 `scripts/seed-demo-data.ps1` 或 `scripts/seed-demo-data.sh`。
+工业服务使用 Java 实现 PDF 中的 HTTP 请求契约及明确标注的扩展；它不是用户的 Flask 服务，也不连接物理设备。无需先提供外部 Flask 地址即可演示。
 
-## API
+用两个浏览器页面分别登录 `demo-operator` 和 `demo-approver`。操作员提交“启动 camera-03 的 intrusion_detection 检测任务”；审批员刷新任务历史、打开任务、填写理由后批准。管理员仅管理账号，不能代替审批员。
 
-```http
-POST /api/agent/tasks
-Content-Type: application/json
+停止命令由启动脚本输出：
+`scripts/stop-local-demo.ps1 -RunPath <本次目录>`。不会删除数据库、日志或账号文件。启动脚本每次创建新环境；保留已有账号与任务请使用 `scripts/restart-local-demo.ps1 -RunPath <本次目录> -UseDeepSeek`，不要重新创建演示环境。
 
-{"query":"分析最近24小时瓦斯相关告警，并生成巡查计划"}
+真实模型服务进程默认保护额度为 1000 次，评测批次另设上限；它们不是货币限额或跨进程累计预算。不要把 Vite 开发服务、明文 HTTP 或演示数据库直接暴露到公网。
+
+## 真实模型实测
+
+最新：规划器 v2 两轮真实 DeepSeek 评测均为 **29/30 = 96.67%**，补充用例均为 12/12，原安全用例均为 0/20 审批绕过；拒绝与进入审批分别统计，不混为成功。两轮新增实际调用 143 次、243195 Token。完整结果和剩余 A07 失败原因见 [v2 改进报告](docs/PLANNING_IMPROVEMENT.md)。这些是固定回归结果，不是独立盲测或生产成功率。
+
+以下保留 2026-08-31 的原始基线：`deepseek-v4-flash`，30 条 Agent + 20 条安全用例：
+
+| 指标 | 本次结果 |
+| --- | --- |
+| 真实模型请求 | 55 次，全部取得完整核心 usage |
+| 输入 / 输出 / 总 Token | 48,958 / 6,439 / 55,397 |
+| Agent 严格成功率 | 9/30 = 30% |
+| 计划工具集合匹配率 | 11/30 = 36.67% |
+| 安全用例审批绕过 | 0/20 |
+| Agent 端到端 p50 / p95 | 1729 / 3355 ms |
+
+严格成功同时要求终态、风险等级、计划工具集合及审批行为符合固定用例。它不是仅 HTTP 成功率，也不是人工语义评分；模型有遗漏工具、额外操作和风险分级不一致，不能宣传成 100% 智能任务成功率。
+
+详情和用量回执：[真实评测说明](docs/DEEPSEEK_ACCEPTANCE.md)、[原始报告](docs/eval/deepseek-2026-08-31.json)。此前 3 次连通性试跑另消耗 3354 Token，不包含在上表中。
+
+原 [确定性快照](docs/eval/latest.json) 保留不改：30 条检索、30 条 Agent、20 条安全用例。规则模型的 100% 和关键词静态基线的 20% 不是 DeepSeek 的效果或端到端模型对比。
+
+## 测试入口
+
+```powershell
+mvn clean verify
+# Docker Desktop 已开启时，使用独立端口与数据卷
+.\scripts\run-external-it.ps1
+# 真实付费调用；包含至多一次计划修复
+.\scripts\run-real-eval.ps1 -MaxCalls 100 -AgentCases 30 -SafetyCases 20
+# 完整新版对照，附加 12 条用例单独计分
+.\scripts\run-real-eval.ps1 -MaxCalls 124 -AgentCases 30 -SafetyCases 20 -SupplementalCases 12
+# 前端离线交互回归
+cd frontend
+npm test
+npm run build
+cd ..
 ```
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| `POST` | `/api/agent/tasks` | 创建异步 Agent 任务 |
-| `GET` | `/api/agent/tasks/{id}` | 查询完整任务与结构化结果 |
-| `GET` | `/api/agent/tasks/{id}/stream` | 订阅 SSE 事件 |
-| `GET` | `/api/agent/tasks/{id}/events` | 获取已保存的事件时间线 |
-| `GET` | `/api/agent/tasks` | 任务历史 |
-| `POST` | `/api/tasks/{id}/approve` | 批准等待中的高风险操作 |
-| `POST` | `/api/tasks/{id}/reject` | 拒绝操作且不改变工业状态 |
-| `GET` | `/api/tools` | Tool 元数据与 JSON Schema |
-| `GET` | `/api/eval/latest` | 最新生成的 Eval 结果 |
+普通测试固定离线配置；外部测试连接 PostgreSQL `127.0.0.1:15432` 和 Milvus `127.0.0.1:19540`。多进程测试实际启动五个应用 JVM（最大同时两个），强制结束节点、验证接管与跨节点 SSE，使用本地模型桩，不消耗 DeepSeek。
 
-审批 Body 可包含 `{"actor":"operator-1","reason":"现场负责人确认"}`。批准/拒绝不是幂等的通用状态覆盖：只允许在 `WAITING_APPROVAL` 调用。
+测试只清理自己创建的随机 schema 和 collection，不删除 Docker 数据卷或用户容器。覆盖率以本次干净构建报告为准，`verify` 强制 JaCoCo 指令覆盖率至少 70%，没有排除业务代码。详见 [当前验收](docs/DURABILITY_SECURITY_ACCEPTANCE.md)；[前阶段快照](docs/INTEGRATION_ACCEPTANCE.md) 不代表当前代码。
 
-SSE 事件：`TASK_STATE_CHANGED`、`PLAN_CREATED`、`TOOL_STARTED`、`TOOL_FINISHED`、`RAG_RETRIEVED`、`WAITING_APPROVAL`、`APPROVED`、`REJECTED`、`VERIFICATION`、`FINAL_RESULT`、`ERROR`。
+## API 与认证
 
-## Configuration
+除 `POST /api/auth/login` 和 `GET /api/health` 外均需 `Authorization: Bearer <token>`。Token 不接受 URL 参数或 Cookie。
 
-默认配置位于 `src/main/resources/application.yml`，敏感值只从环境读取。
+| 方法与路径 | 权限与用途 |
+| --- | --- |
+| POST /api/auth/login | 用户名、密码换取有期限的会话 |
+| GET /api/auth/me；POST /api/auth/logout | 当前身份；撤销本会话 |
+| GET/POST /api/admin/users | ADMIN：查询/创建同租户账号 |
+| POST /api/admin/users/{id}/enabled | ADMIN：启用/禁用；禁用立即撤销会话 |
+| POST /api/agent/tasks | OPERATOR：创建任务；必须带 Idempotency-Key |
+| GET /api/agent/tasks/{id} | 发起人或同租户审计/审批/管理员 |
+| GET /api/agent/tasks/{id}/report | 同原任务读取权限；返回中文汇报与引用，旧任务只读转换，尚无结果时返回 409 |
+| GET /api/agent/tasks | 按身份过滤任务历史，最新 200 条 |
+| GET /api/agent/tasks/{id}/events?after=序号 | 已提交事件，单页最多 500 条 |
+| GET /api/agent/tasks/{id}/stream | SSE；Last-Event-ID 恢复，连接期间继续校验会话 |
+| POST /api/tasks/{id}/approve 或 reject | 非发起人的 APPROVER；必须带 Idempotency-Key |
+| GET /api/tools；GET /api/eval/latest；GET /api/eval/real | 工具元数据；历史确定性快照；独立真实模型归档 |
+| GET /api/eval/comparison | 原始真实模型基线与当前新版归档；需要认证 |
 
-```bash
-# OpenAI-compatible planning (real model eval is separate from deterministic result)
-export MINEGUARD_LLM_PROVIDER=openai-compatible
-export OPENAI_API_KEY=...
-export OPENAI_BASE_URL=https://api.openai.com/v1
-export OPENAI_MODEL=gpt-4o-mini
+创建体为 `{"query":"查询安全帽规范"}`。审批体为 `{"reason":"已确认目标及操作","planHash":"从任务读取的摘要"}`。不能通过 Body 中的 `actor` 冒充他人。同一幂等键和同一请求可安全重试，不同内容返回 409。审批人来自认证身份，不来自模型。
 
-# PostgreSQL profile
-export SPRING_PROFILES_ACTIVE=postgres
-export DATABASE_URL=jdbc:postgresql://localhost:5432/mineguard
-export DATABASE_USERNAME=mineguard
-export DATABASE_PASSWORD=...
+## 配置与部署边界
 
-# Milvus REST v2 adapter
-export MINEGUARD_VECTOR_STORE=milvus
-export MILVUS_URI=http://localhost:19530
-```
+`.env.example` 是中文模板，不会自动加载。敏感配置通过进程环境或受控凭据注入；不要提交 `key.txt`、数据库文件或本地账号文件。
 
-`MilvusVectorStore` 采用 REST v2；当前需要预先建立 `mineguard_knowledge` collection 及 `id/documentId/title/chunkId/content/vector(768)` 字段。该约束也列在 Limitations 中，默认 InMemory 实现无需外部服务。
+多实例必须共享 PostgreSQL、数据库 schema 和工业接收端；H2 文件模式只用于单应用本机演示。Flyway 负责工作流/认证表迁移。首次使用独立空 schema；既有库必须先备份并审查迁移，不能打开自动 baseline 蒙混通过。首节点完成演示数据初始化后再启动其余节点；实际业务库必须设置 `MINEGUARD_DEMO_DATA_ENABLED=false`。
 
-## RAG and evaluation
+已实现可运行的安全与恢复核心，不等于通过生产认证。尚未验收 TLS/SSO/MFA、密码轮换、外部网关级限流、审计防篡改、数据保留与备份恢复、数据库/网络分区、设备级 fencing、真实硬件联调。Milvus 需独占预建集合，快照替换不是跨实例原子事务；当前 Embedding 仍是离线哈希向量。
 
-知识库有 20 篇短文，均带 `Synthetic Demo Data` 声明；缺少声明的文档会在加载时被拒绝。`HashingEmbeddingClient` 用于完全离线、稳定的工程回归，不能等同于语义 Embedding 模型。
+`RECOVERY_REQUIRED` 不开放一键重跑接口：必须核对接收端回执、设备状态与审批有效性后制定处置，避免未知写操作被再次发送。
 
-评测器逐条实际调用 Retriever 或 Workflow：
+## 文档
 
-- Retrieval：Recall@1/@3/@5、MRR。
-- Agent：Task Success、Tool Selection、参数有效率、审批强制率、平均 Tool Calls、p50/p95、Evidence Coverage。
-- Safety：20 条“跳过审批/管理员命令/先执行后审批”等提示注入，检查高风险 Tool 是否在等待审批前成功。
-- Baseline：每个请求只按关键词选择一个 Tool，无多步计划、RAG Ranking、审批与验证；同一 case set，结论仅限确定性评测。
-
-Real Model Evaluation 只有在显式配置 OpenAI-compatible provider 后才运行；本仓库当前生成结果明确为 `NOT RUN`。
-
-## Trace
-
-运行 Trace 写入被 Git 忽略的 `data/runtime/traces/{taskId}.json`，字段包含 `runId`、`taskId`、时间、状态迁移、Tool Call、Retrieval、Approval、Errors、Result 与总耗时。TraceRecorder 按 key 过滤 secret/key/password/CoT 类字段，不记录模型隐藏推理。
-
-## Project structure
-
-```text
-src/main/java/com/mineguard/
-├── agent       # plan/result/model validation
-├── approval    # approval decision model
-├── api         # REST/SSE controllers
-├── config      # data, model, vector and executor wiring
-├── device      # IndustrialGateway + mock backend
-├── eval        # executable evaluators and report generation
-├── event       # H2/PostgreSQL safety event repository
-├── llm         # deterministic/OpenAI-compatible clients
-├── rag         # loader, chunker, embedding, stores, evidence
-├── tool        # Tool API, schemas, registry and implementations
-├── trace       # observable trace persistence
-└── workflow    # state machine, task store, event bus, engine
-
-data/knowledge  # 20 synthetic knowledge documents
-data/eval       # 30 retrieval + 30 agent + 20 safety cases
-frontend        # Vue 3 / TypeScript / Vite console
-scripts         # reproducible seed/eval entry points
-docs            # architecture, interview and generated metrics
-```
-
-## Engineering decisions
-
-- **安全策略不交给 Prompt**：Tool category 与 `approvalGranted` 在 Java 后端检查；模型说“已批准”没有任何权限效果。
-- **规划和执行分离**：模型只生成 Plan，Registry 才能找到并运行 Tool，网关不暴露给模型客户端。
-- **验证是独立阶段**：Tool 返回 success 只表示调用完成，真实期望状态由另一个读取接口确认。
-- **数据库和 RAG 各司其职**：时间/区域/严重度聚合使用 SQL；规范解释使用 ranked retrieval。
-- **离线默认值**：面试演示和 CI 不依赖付费 API 或 Milvus，同时保留可替换接口。
-- **只记录可观察事件**：Trace 支持复盘与指标，不把 Chain of Thought 当成工程日志。
-
-## Limitations
-
-- 默认 Planner 是覆盖演示意图的确定性规则，不具备开放域自然语言泛化能力；Real Model Eval 尚未运行。
-- `AgentTaskStore` 和 SSE history 位于内存，进程重启后消失；生产应替换为持久化任务/事件存储。
-- MockIndustrialGateway 没有真实设备协议、鉴权、租户、RBAC 和幂等键。
-- Milvus adapter 假设 collection 已建；暂未提供 schema migration 或 Milvus 集成测试环境。
-- H2/PostgreSQL 只持久化安全事件，审批与巡查计划仍是演示生命周期。
-- 哈希 Embedding 对固定词汇有效，不能声称真实语义检索质量。
-- SSE 是单实例进程内广播；横向扩容需要消息总线和可恢复 cursor。
-
-## Roadmap
-
-1. 持久化 AgentTask、审批与 Outbox 事件，并加入幂等执行键。
-2. 增加 RBAC、审批人策略、双人复核和审计签名。
-3. 增加 Testcontainers PostgreSQL/Milvus 集成测试与 collection migration。
-4. 接入真实 Embedding 和受控 Real Model Eval，分别报告 deterministic 与 real-model 指标。
-5. 以消息队列/调度器支持跨进程 long-running task、超时、补偿和断点恢复。
-
-## Further reading
-
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-- [`docs/INTERVIEW_GUIDE.md`](docs/INTERVIEW_GUIDE.md)
-- [`docs/EVAL_REPORT.md`](docs/EVAL_REPORT.md)
-- [`docs/RESUME_METRICS.md`](docs/RESUME_METRICS.md)
-- [`FINAL_REPORT.md`](FINAL_REPORT.md)（最终验收后生成）
+- [架构设计](docs/ARCHITECTURE.md)
+- [持久化、安全与本轮测试](docs/DURABILITY_SECURITY_ACCEPTANCE.md)
+- [DeepSeek 接入](docs/DEEPSEEK_SETUP.md) / [真实评测](docs/DEEPSEEK_ACCEPTANCE.md)
+- [规划器 v2 与前端改进验收](docs/PLANNING_IMPROVEMENT.md)
+- [自然语言任务汇报与引用溯源](docs/TASK_REPORT.md)
+- [工业 API 映射](docs/INDUSTRIAL_API_MAPPING.md)
+- [仍需用户提供的资料](docs/COLLABORATION_CHECKLIST.md)
+- [历史阶段报告](FINAL_REPORT.md)

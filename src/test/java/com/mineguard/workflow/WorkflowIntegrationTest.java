@@ -5,6 +5,8 @@ import com.mineguard.device.IndustrialGateway;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import java.time.Duration;
 
@@ -12,6 +14,12 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 class WorkflowIntegrationTest {
+    // 不同 Spring 测试上下文有各自的内存工业网关，调度数据库也必须隔离。
+    @DynamicPropertySource
+    static void isolatedDatabase(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", () -> "jdbc:h2:mem:workflow_integration;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE");
+    }
+
     @Autowired AgentWorkflowEngine workflow;
     @Autowired TaskEventPublisher publisher;
     @Autowired IndustrialGateway gateway;
@@ -25,6 +33,9 @@ class WorkflowIntegrationTest {
                 .contains("query_safety_events", "query_alert_statistics", "search_safety_knowledge");
         assertThat(task.getEvidence()).isNotEmpty();
         assertThat(task.getResult()).isNotNull();
+        assertThat(task.getResult().report()).isNotNull();
+        assertThat(workflow.get(task.getTaskId()).getResult().report()).isEqualTo(task.getResult().report());
+        assertThat(task.getResult().findings()).noneMatch(s -> s.contains("成功：{"));
         assertThat(publisher.history(task.getTaskId())).extracting(TaskEvent::type).contains(TaskEventType.FINAL_RESULT);
     }
 
@@ -73,7 +84,7 @@ class WorkflowIntegrationTest {
     private void await(AgentTask task, AgentTaskState expected) {
         assertThatCode(() -> {
             long deadline = System.nanoTime() + Duration.ofSeconds(8).toNanos();
-            while (task.getState() != expected && System.nanoTime() < deadline) Thread.sleep(10);
+            while (task.getState() != expected && System.nanoTime() < deadline) { task.refreshFrom(workflow.get(task.getTaskId())); Thread.sleep(10); }
         }).doesNotThrowAnyException();
         assertThat(task.getState()).isEqualTo(expected);
     }

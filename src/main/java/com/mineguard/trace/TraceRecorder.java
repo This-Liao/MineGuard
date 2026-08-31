@@ -2,6 +2,7 @@ package com.mineguard.trace;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mineguard.config.MineGuardProperties;
+import com.mineguard.workflow.JdbcAgentTaskStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,11 +22,13 @@ public class TraceRecorder {
     private static final Logger log = LoggerFactory.getLogger(TraceRecorder.class);
     private final ObjectMapper objectMapper;
     private final Path tracePath;
+    private final JdbcAgentTaskStore tasks;
     private final Map<String, TraceRun> runs = new ConcurrentHashMap<>();
 
-    public TraceRecorder(ObjectMapper objectMapper, MineGuardProperties properties) {
+    public TraceRecorder(ObjectMapper objectMapper, MineGuardProperties properties, JdbcAgentTaskStore tasks) {
         this.objectMapper = objectMapper;
         this.tracePath = Path.of(properties.tracePath()).toAbsolutePath().normalize();
+        this.tasks = tasks;
     }
 
     public void start(String taskId, String userQuery) {
@@ -41,6 +44,25 @@ public class TraceRecorder {
     }
 
     public Optional<TraceRunView> get(String taskId) {
+        var task = tasks.findById(taskId);
+        if (task.isPresent()) {
+            var t = task.get();
+            List<TraceEvent> events = tasks.history(taskId, 0, 10000).stream().map(e -> new TraceEvent(e.timestamp(), switch (e.type()) {
+                case TASK_STATE_CHANGED -> "STATE_TRANSITION";
+                case TOOL_FINISHED -> "TOOL_CALL";
+                case RAG_RETRIEVED -> "RETRIEVAL";
+                case APPROVED, REJECTED, WAITING_APPROVAL -> "APPROVAL";
+                default -> e.type().name();
+            }, e.payload())).toList();
+            Instant finish = t.getState().terminal() ? t.getUpdatedAt() : null;
+            return Optional.of(new TraceRunView(taskId, taskId, t.getUserQuery(), t.getCreatedAt(), finish,
+                    Duration.between(t.getCreatedAt(), finish == null ? Instant.now() : finish).toMillis(),
+                    events.stream().filter(e -> e.type().equals("STATE_TRANSITION")).toList(),
+                    events.stream().filter(e -> e.type().equals("TOOL_CALL")).toList(),
+                    events.stream().filter(e -> e.type().equals("RETRIEVAL")).toList(),
+                    events.stream().filter(e -> e.type().equals("APPROVAL")).toList(),
+                    events.stream().filter(e -> e.type().equals("ERROR")).toList(), events, t.getResult()));
+        }
         TraceRun run = runs.get(taskId);
         return run == null ? Optional.empty() : Optional.of(run.view());
     }
@@ -58,7 +80,7 @@ public class TraceRecorder {
             Files.createDirectories(tracePath);
             Path target = tracePath.resolve(run.taskId + ".json");
             Path temp = Files.createTempFile(tracePath, run.taskId, ".tmp");
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(temp.toFile(), run.view());
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(temp.toFile(), get(run.taskId).orElse(run.view()));
             try {
                 Files.move(temp, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
             } catch (IOException noAtomicMove) {

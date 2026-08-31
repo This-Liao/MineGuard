@@ -1,5 +1,5 @@
 package com.mineguard.device;
 
 public enum DeviceStatus {
-    ONLINE, OFFLINE, DEGRADED
+    ONLINE, OFFLINE, DEGRADED, UNKNOWN
 }

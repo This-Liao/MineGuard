@@ -1,0 +1,45 @@
+{
+  "status": "PASSED",
+  "scope": "规划器 v2、前端工作台与既有数据库环境恢复",
+  "verificationCommand": "scripts/run-external-it.ps1（mvn -q -Pexternal-it clean verify）",
+  "surefire": { "tests": 94, "failures": 0, "errors": 0, "skipped": 0 },
+  "failsafe": { "tests": 3, "failures": 0, "errors": 0, "skipped": 0 },
+  "frontend": {
+    "command": "npm test；npm run build",
+    "tests": 19,
+    "passed": 19,
+    "productionBuild": "PASSED",
+    "testEnvironment": "Vitest + Vue Test Utils + jsdom，本地内存夹具，不访问真实账号",
+    "browserLoginPage": "已核对实际显示",
+    "browserAuthenticatedFlow": "未代用户登录；角色、审批、幂等、401 与 SSE 通过组件测试验证"
+  },
+  "jacoco": {
+    "instruction": { "covered": 12862, "missed": 2391, "percent": 84.32 },
+    "line": { "covered": 1681, "missed": 272, "percent": 86.07 },
+    "branch": { "covered": 817, "missed": 425, "percent": 65.78 },
+    "scope": "本次干净构建中被 JaCoCo 探针覆盖的测试进程；故障注入子 JVM 没有额外探针，不把这些执行算成已覆盖",
+    "businessCodeExclusions": false,
+    "instructionGate": 70
+  },
+  "distributedRecovery": {
+    "report": "data/runtime/distributed-it/workflow_it_a42f6534451a4fa2ae187d23b6641d3c/report.json",
+    "database": "PostgreSQL",
+    "applicationJvmCount": 5,
+    "planningCrashRecoveryMs": 6138,
+    "sseReplayCount": 19,
+    "eventCount": 21,
+    "duplicateCommandsDuringRecovery": 0,
+    "model": "本地确定性 HTTP 桩，不消耗 DeepSeek",
+    "industrial": "本地契约服务，不控制物理设备"
+  },
+  "deployment": {
+    "runPath": "data/runtime/local-demo/20260831-145613",
+    "restartPath": "data/runtime/local-demo/20260831-145613/restart-20260831-171855",
+    "frontend": "http://127.0.0.1:5173",
+    "backend": "http://127.0.0.1:8080",
+    "industrialContract": "http://127.0.0.1:18081",
+    "health": "三个服务均已就绪",
+    "accounts": "原账号文件未修改，不在报告记录密码",
+    "artifactSha256": "2981AA934AD4409C4A95819E33FBA61456A0537918BF6AADA7EAB4D224DCDFF4"
+  }
+}

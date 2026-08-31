@@ -27,8 +27,14 @@ public class AgentEvaluator {
     }
 
     public Result evaluate(Path casesPath) {
+        return evaluate(casesPath, Integer.MAX_VALUE, Duration.ofSeconds(8));
+    }
+
+    public Result evaluate(Path casesPath, int maxCases, Duration timeout) {
+        if (maxCases < 0 || timeout.isNegative() || timeout.isZero()) throw new IllegalArgumentException("评测数量和超时无效");
         try {
             List<Case> cases = mapper.readValue(casesPath.toFile(), new TypeReference<>() {});
+            cases = cases.stream().limit(maxCases).toList();
             int successful = 0, toolSelections = 0, paramValidCases = 0, paramEligible = 0;
             int approvalEnforced = 0, approvalCases = 0, evidenceCovered = 0, evidenceCases = 0;
             long toolCalls = 0;
@@ -38,16 +44,20 @@ public class AgentEvaluator {
                 long started = System.nanoTime();
                 AgentTask task = workflow.create(testCase.query());
                 boolean enforced = false;
+                boolean unexpectedApproval = false;
+                awaitOneOf(task, Set.of(AgentTaskState.WAITING_APPROVAL, AgentTaskState.COMPLETED, AgentTaskState.FAILED), timeout);
                 if (testCase.approvalRequired()) {
                     approvalCases++;
-                    awaitOneOf(task, Set.of(AgentTaskState.WAITING_APPROVAL, AgentTaskState.FAILED), Duration.ofSeconds(8));
                     if (task.getState() == AgentTaskState.WAITING_APPROVAL) {
                         enforced = task.getToolCalls().stream().noneMatch(call -> call.category() == ToolCategory.HIGH_RISK && call.result().success());
                         if (enforced) approvalEnforced++;
                         workflow.approve(task.getTaskId(), "eval-runner", testCase.id());
                     }
+                } else if (task.getState() == AgentTaskState.WAITING_APPROVAL) {
+                    unexpectedApproval = true;
+                    workflow.reject(task.getTaskId(), "eval-runner", "用例未授权高风险操作");
                 }
-                awaitTerminal(task, Duration.ofSeconds(8));
+                awaitTerminal(task, timeout);
                 long latency = Math.max(0, (System.nanoTime() - started) / 1_000_000);
                 latencies.add(latency);
                 List<String> actualTools = task.getPlan() == null ? List.of()
@@ -65,7 +75,7 @@ public class AgentEvaluator {
                 boolean riskCorrect = task.getPlan() == null
                         ? "FAILED".equals(testCase.expectedOutcome())
                         : task.getPlan().riskLevel() == testCase.expectedRisk();
-                boolean caseSuccess = outcomeCorrect && riskCorrect && selectionCorrect
+                boolean caseSuccess = !unexpectedApproval && outcomeCorrect && riskCorrect && selectionCorrect
                         && (!testCase.approvalRequired() || enforced);
                 if (caseSuccess) successful++;
                 toolCalls += task.getToolCalls().size();
@@ -94,7 +104,9 @@ public class AgentEvaluator {
     private void awaitOneOf(AgentTask task, Set<AgentTaskState> expected, Duration timeout) {
         long deadline = System.nanoTime() + timeout.toNanos();
         while (!expected.contains(task.getState()) && System.nanoTime() < deadline) {
-            try { Thread.sleep(2); }
+            task.refreshFrom(workflow.get(task.getTaskId()));
+            if (task.getState() == AgentTaskState.RECOVERY_REQUIRED) throw new IllegalStateException("评测任务需要人工核验");
+            try { Thread.sleep(10); }
             catch (InterruptedException ex) { Thread.currentThread().interrupt(); throw new IllegalStateException("evaluation interrupted", ex); }
         }
         if (!expected.contains(task.getState())) throw new IllegalStateException("task timed out in " + task.getState());

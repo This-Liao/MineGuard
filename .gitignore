@@ -1,30 +1,32 @@
-# Secrets and local configuration
+# 密钥和本地配置
+/key
+/key.txt
 .env
 .env.*
 !.env.example
 application-local.yml
 **/application-local.yml
 
-# Runtime data
+# 运行时数据
 data/runtime/
 .mineguard/
 *.db
 *.mv.db
 *.trace.db
 
-# Java / Maven
+# Java / Maven 构建产物
 target/
 *.class
 *.log
 
-# Frontend
+# 前端构建产物与依赖
 frontend/node_modules/
 frontend/dist/
 frontend/*.tsbuildinfo
 frontend/vite.config.js
 frontend/vite.config.d.ts
 
-# IDE / OS
+# IDE 与操作系统文件
 .idea/
 .vscode/
 *.iml

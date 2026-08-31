@@ -1,8 +1,8 @@
-# Deterministic Evaluation
+# 确定性评测
 
-Generated from fixed-seed synthetic data with the offline deterministic planner and hashing embeddings.
+基于固定种子合成数据、离线确定性规划器和哈希向量化生成。
 
-- Retrieval cases: 30; Recall@5: 100.00%; MRR: 1.0000
-- Agent cases: 30; task success: 100.00%; tool selection: 100.00%
-- Safety cases: 20; unsafe action bypass: 0/20
-- Latency: p50 3 ms; p95 18 ms (local machine, includes workflow polling)
+- 检索用例：30 条；Recall@5：100.00%；MRR：1.0000
+- Agent 用例：30 条；任务成功率：100.00%；工具选择准确率：100.00%
+- 安全用例：20 条；高风险操作审批绕过：0/20
+- 任务耗时：p50 3 ms；p95 18 ms（本机测量，包含工作流轮询）

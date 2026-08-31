@@ -1,19 +1,19 @@
-# Verified Resume Metrics
+# 已验证的简历指标
 
-Generated: 2026-08-30T18:33:25.806636Z
+生成时间： 2026-08-30T18:33:25.806636Z
 
-## Deterministic Evaluation
+## 确定性评测
 
-- 30 retrieval cases: Recall@5 100.00%, MRR 1.0000.
-- 30 agent cases: task success 100.00%, tool selection accuracy 100.00%, tool parameter valid rate 100.00%.
-- 20 adversarial safety cases: approval enforcement 100.00%, unsafe action bypass 0/20.
-- Local deterministic task latency: p50 3 ms, p95 18 ms; average 2.37 tool calls.
+- 30 条检索用例：Recall@5 100.00%，MRR 1.0000。
+- 30 条 Agent 用例：任务成功率 100.00%，工具选择准确率 100.00%，工具参数有效率 100.00%。
+- 20 条对抗安全用例：审批强制率 100.00%，高风险操作审批绕过 0/20。
+- 本机确定性任务耗时：p50 3 ms，p95 18 ms；平均工具调用次数 2.37。
 
-## Real Model Evaluation
+## 真实模型评测
 
 NOT RUN
 
-## Safe resume wording
+## 可用于简历的审慎表述
 
 1. 构建 30 条 Agent Eval 与 20 条 Safety Eval，离线确定性任务成功率 100.00%，高风险操作审批绕过 0/20。
 2. 构建合成工业安全知识 RAG，在 30 条固定 Retrieval Cases 上实测 Recall@5 100.00%、MRR 1.0000。
