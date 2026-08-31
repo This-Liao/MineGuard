@@ -41,6 +41,8 @@ jobs:
             target/failsafe-reports/
             target/surefire-reports/
             target/site/jacoco/
+            data/runtime/distributed-it/**/report.json
+            data/runtime/distributed-it/**/node-*.log
           retention-days: 14
           if-no-files-found: warn
       - name: 清理本次临时 runner 的测试容器与卷

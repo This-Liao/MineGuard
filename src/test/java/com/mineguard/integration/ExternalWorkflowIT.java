@@ -158,14 +158,16 @@ class ExternalWorkflowIT {
 
     private Node start(String name) throws Exception {
         int port; try (var socket = new ServerSocket(0, 0, InetAddress.getLoopbackAddress())) { port = socket.getLocalPort(); }
-        var command = List.of(Path.of(System.getProperty("java.home"), "bin", "java.exe").toString(), "-jar", "target/mineguard-1.0.0-SNAPSHOT.jar",
+        // 使用当前 JDK 的平台可执行文件，兼容本地 Windows 与 GitHub Linux runner。
+        String javaExecutable = System.getProperty("os.name").toLowerCase(Locale.ROOT).startsWith("windows") ? "java.exe" : "java";
+        var command = List.of(Path.of(System.getProperty("java.home"), "bin", javaExecutable).toString(), "-jar", "target/mineguard-1.0.0-SNAPSHOT.jar",
                 "--server.port=" + port, "--server.address=127.0.0.1", "--spring.datasource.url=" + databaseUrl,
                 "--spring.datasource.driver-class-name=org.postgresql.Driver", "--spring.flyway.default-schema=" + schema,
                 "--mineguard.runtime.node-id=" + name, "--mineguard.runtime.lease-seconds=6", "--mineguard.runtime.scheduler-enabled=true",
                 "--mineguard.llm.provider=openai-compatible", "--mineguard.llm.base-url=http://127.0.0.1:" + modelPort,
                 "--mineguard.llm.model=local-test-stub", "--mineguard.llm.max-calls=50", "--mineguard.llm.request-timeout-seconds=90",
                 "--mineguard.industrial.type=http-contract", "--mineguard.industrial.base-url=http://127.0.0.1:" + contractPort,
-                "--mineguard.vector-store.type=in-memory", "--mineguard.knowledge-path=data/knowledge", "--mineguard.trace-path=" + output.resolve(name + "-traces"));
+                "--mineguard.vector-store.type=in-memory", "--mineguard.embedding.provider=hashing", "--mineguard.knowledge-path=data/knowledge", "--mineguard.trace-path=" + output.resolve(name + "-traces"));
         var builder = new ProcessBuilder(command).redirectErrorStream(true).redirectOutput(output.resolve(name + ".log").toFile());
         builder.environment().putAll(Map.of("DATABASE_USERNAME", "mineguard_test", "DATABASE_PASSWORD", "local-test-only",
                 "OPENAI_API_KEY", "offline-test-secret", "MINEGUARD_BOOTSTRAP_USERNAME", "it-admin", "MINEGUARD_BOOTSTRAP_PASSWORD", fixturePassword,
