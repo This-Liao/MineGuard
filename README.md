@@ -15,6 +15,7 @@
 [![TypeScript][badge-ts]](frontend/package.json)
 [![DeepSeek][badge-deepseek]](docs/DEEPSEEK_SETUP.md)
 
+[![GitHub Actions CI][badge-ci]](https://github.com/This-Liao/MineGuard/actions/workflows/ci.yml)
 [![本地回归：135 项通过][badge-tests]](docs/TASK_REPORT.md#2026-08-31-本次验收)
 [![指令覆盖率：85.36%][badge-coverage]](docs/TASK_REPORT.md#2026-08-31-本次验收)
 [![GitHub Stars][badge-stars]](https://github.com/This-Liao/MineGuard/stargazers)
@@ -212,7 +213,7 @@ cd ..
 | JaCoCo 指令覆盖率 | **85.36%**，构建门禁 ≥ 70% | 14159 / 16587 条指令 |
 | 前端构建 | 类型检查与生产构建通过 | `vue-tsc` + Vite |
 
-顶部测试与覆盖率徽章是上述日期的**本地验收快照，不是 GitHub Actions 实时状态**。完整方法、产物校验与限制见 [本次验收说明](docs/TASK_REPORT.md#2026-08-31-本次验收)。
+顶部 **CI 徽章**展示 GitHub Actions 的真实运行状态；“本地回归”和覆盖率徽章保留上述日期的验收快照。每次 push / PR 执行 Java 测试与覆盖率门禁、前端测试和构建；外部 PostgreSQL / Milvus 验收单独支持手动与每日定时运行。详见 [CI 说明](docs/CI.md)、[当前评测总览](docs/EVAL_REPORT.md) 与 [简历指标](docs/RESUME_METRICS.md)。
 
 <details>
 <summary><strong>展开查看真实模型 Token 用量与历史基线</strong></summary>
@@ -340,7 +341,7 @@ MineGuard/
 - [ ] 接入语义 Embedding，扩充检索质量评测。
 - [ ] 对接实际工业网关与物理设备，验证设备侧幂等和 fencing。
 - [ ] 完善企业身份接入、审计防篡改、备份恢复与费用治理。
-- [ ] 建立持续集成流水线，生成可追溯的构建与测试状态。
+- [x] 建立持续集成流水线，保存测试与覆盖率报告，外部集成单独运行。
 
 ## 交流与反馈
 
@@ -357,6 +358,7 @@ MineGuard/
 </div>
 
 [badge-java]: https://img.shields.io/badge/Java-21%2B-ED8B00?style=flat-square&logo=openjdk&logoColor=white
+[badge-ci]: https://github.com/This-Liao/MineGuard/actions/workflows/ci.yml/badge.svg?branch=main
 [badge-spring]: https://img.shields.io/badge/Spring_Boot-3.3.5-6DB33F?style=flat-square&logo=springboot&logoColor=white
 [badge-vue]: https://img.shields.io/badge/Vue-3-42B883?style=flat-square&logo=vuedotjs&logoColor=white
 [badge-ts]: https://img.shields.io/badge/TypeScript-5.7-3178C6?style=flat-square&logo=typescript&logoColor=white

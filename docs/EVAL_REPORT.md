@@ -1,4 +1,30 @@
-# MineGuard 评测报告
+# MineGuard 当前评测总览
+
+更新日期：2026-08-31。本文件是当前证据入口，不再由离线评测覆盖。
+
+## 真实模型与工程验收
+
+| 类型 | 已归档结果 | 原始证据 |
+| :--- | :--- | :--- |
+| DeepSeek v4-flash 原始固定基线 | Agent 9/30（30%）；55 次请求，55397 Token | [基线 JSON](eval/deepseek-2026-08-31.json) |
+| Planning v2 第一次 | Agent 29/30（96.67%），补充 12/12；74 次请求，125091 Token | [第一次 JSON](eval/deepseek-v2-run1-2026-08-31.json) |
+| Planning v2 第二次 | Agent 29/30（96.67%），补充 12/12；69 次请求，118104 Token | [第二次 JSON](eval/deepseek-v2-2026-08-31.json) |
+| 工程验收（2026-08-31） | 104 后端 + 3 外部集成 + 28 前端测试通过；JaCoCo 指令覆盖率 85.36% | [任务报告验收](TASK_REPORT.md#2026-08-31-本次验收) |
+
+真实模型已经运行。历史 JSON 中的 `realModelEvaluation.status = NOT RUN` 只描述那一次离线运行，不代表项目当前状态。历史值不反向修改。
+
+严格成功同时检查终态、风险、完整工具集合与审批行为；A07 未通过项保留。两轮重复题和 12 条开发者可见补充题不合并为独立盲测。原始批次为 30 Agent + 20 Safety，新版每批另含 12 条补充，整批 Token 不能直接当作等量成本对比。详见 [规划器改进报告](PLANNING_IMPROVEMENT.md)。
+
+## 报告更新规则
+
+离线评测只更新自身 JSON、`docs/eval/deterministic-report.md` 与 `DETERMINISTIC_EVAL.md`，不再覆盖本文件、`RESUME_METRICS.md` 或 `REAL_MODEL_EVAL.md`。真实评测按独立运行目录归档；当前可用于简历的口径见 [指标说明](RESUME_METRICS.md)。
+
+## 历史确定性快照（2026-08-30）
+
+以下是旧版离线验收，包含规则规划器、哈希 Embedding 和当时的 22 项测试；不是当前真实模型成绩，也不是当前测试规模。
+
+<details>
+<summary>展开历史确定性报告（Historical Deterministic Snapshot）</summary>
 
 生成时间： 2026-08-30T18:33:25.806636Z
 
@@ -46,3 +72,7 @@
 ## 真实模型评测
 
 未运行（NOT RUN）——本轮未配置真实模型。
+
+这里的“本轮”仅指上面标注的 2026-08-30 离线快照。当前 DeepSeek 已运行，结果见本页顶部。
+
+</details>

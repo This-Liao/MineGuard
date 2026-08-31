@@ -22,6 +22,7 @@ target/
 # 前端构建产物与依赖
 frontend/node_modules/
 frontend/dist/
+frontend/vitest-results.xml
 frontend/*.tsbuildinfo
 frontend/vite.config.js
 frontend/vite.config.d.ts

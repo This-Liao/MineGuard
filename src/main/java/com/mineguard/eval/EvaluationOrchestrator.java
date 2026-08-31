@@ -57,10 +57,9 @@ public class EvaluationOrchestrator {
             Files.createDirectories(evalDir);
             mapper.writerWithDefaultPrettyPrinter().writeValue(evalDir.resolve("latest.json").toFile(), snapshot);
             mapper.writerWithDefaultPrettyPrinter().writeValue(evalDir.resolve("retrieval-latest.json").toFile(), snapshot.retrieval());
-            write(root.resolve("docs/EVAL_REPORT.md"), evalReport(snapshot));
+            // 离线运行只更新自身产物，不能覆盖当前指标入口。
+            write(root.resolve("docs/eval/deterministic-report.md"), evalReport(snapshot));
             write(root.resolve("docs/DETERMINISTIC_EVAL.md"), deterministicReport(snapshot));
-            write(root.resolve("docs/REAL_MODEL_EVAL.md"), realModelReport(snapshot));
-            write(root.resolve("docs/RESUME_METRICS.md"), resumeMetrics(snapshot));
         } catch (IOException ex) {
             throw new IllegalStateException("cannot write evaluation artifacts", ex);
         }
@@ -68,11 +67,11 @@ public class EvaluationOrchestrator {
 
     private String evalReport(Snapshot s) {
         return """
-                # MineGuard 评测报告
+                # 确定性回归报告（离线模式）
 
                 生成时间： %s
 
-                本报告中的全部指标均由 `EvaluationOrchestrator` 根据实际执行结果生成，并非手工预设的评测数字。
+                本文件只记录本轮离线模型和哈希检索的结果，不代表真实 DeepSeek 的当前状态。当前指标见 [评测总览](../EVAL_REPORT.md)。
 
                 ## 构建与测试
 
@@ -182,7 +181,7 @@ public class EvaluationOrchestrator {
                 s.agent().p50LatencyMs(), s.agent().p95LatencyMs());
     }
 
-    private String realStatus(Snapshot s) { return model.realModel() ? "已运行——见 `docs/REAL_MODEL_EVAL.md`。" : "未运行（NOT RUN）——本轮未配置真实模型。"; }
+    private String realStatus(Snapshot s) { return "本轮为离线回归，不发起模型 API 请求。真实模型的独立归档见 [当前评测总览](../EVAL_REPORT.md)。"; }
     private String pct(double value) { return "%.2f%%".formatted(value * 100); }
     private String dec(double value) { return "%.4f".formatted(value); }
     private void write(Path path, String content) throws IOException {
