@@ -351,15 +351,9 @@ MineGuard/
 
 作者与维护者：[**This-Liao**](https://github.com/This-Liao)。如果这个项目对你有帮助，欢迎 Star ⭐。
 
-### 许可说明
-
-仓库当前尚未添加 `LICENSE`，具体许可范围待作者确认，因此不展示 MIT / Apache 等许可证徽章。
-
 ---
 
 <div align="center">
-
-**MineGuard · 让执行可控，让结果可追溯。**
 
 [回到顶部](#readme-top)
 
