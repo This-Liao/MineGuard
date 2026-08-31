@@ -24,6 +24,15 @@
 
 ## 徽章与失败处理
 
+2026-09-01 已核验提交 `f80de1b`：
+
+| 工作流 | 远程结论 | 原始运行 |
+| --- | --- | --- |
+| Java / 前端 / 向量 HTTP 契约 | **success** | [CI #33413557898](https://github.com/This-Liao/MineGuard/actions/runs/33413557898) |
+| PostgreSQL / Milvus / 跨进程恢复 | **success** | [External Integration #33413559278](https://github.com/This-Liao/MineGuard/actions/runs/33413559278) |
+
+首次外部运行发现测试代码写死 `java.exe`，已按平台选择 `java` / `java.exe` 后通过完整验收；保留 [失败运行](https://github.com/This-Liao/MineGuard/actions/runs/33413126017)，未跳过恢复测试或修改评分条件。
+
 README 的 CI 徽章链接到真实 Actions 状态，不代表本地验收历史。推送完成但 GitHub 尚未执行时，不把它写成绿色通过。
 
 失败先查看具体 job 和归档报告；禁止通过跳过失败测试、去掉覆盖率门禁或设置 `continue-on-error` 来变绿。首次贡献者的 PR 可能需要维护者在 GitHub 界面批准运行，这是平台保护，不应绕过。

@@ -16,6 +16,7 @@
 [![DeepSeek][badge-deepseek]](docs/DEEPSEEK_SETUP.md)
 
 [![GitHub Actions CI][badge-ci]](https://github.com/This-Liao/MineGuard/actions/workflows/ci.yml)
+[![外部集成 CI][badge-external-ci]](https://github.com/This-Liao/MineGuard/actions/workflows/external-integration.yml)
 [![后端回归：126 项通过][badge-tests]](docs/ENGINEERING_ACCEPTANCE.md)
 [![指令覆盖率：82.84%][badge-coverage]](docs/ENGINEERING_ACCEPTANCE.md)
 [![GitHub Stars][badge-stars]](https://github.com/This-Liao/MineGuard/stargazers)
@@ -375,6 +376,7 @@ MineGuard/
 
 [badge-java]: https://img.shields.io/badge/Java-21%2B-ED8B00?style=flat-square&logo=openjdk&logoColor=white
 [badge-ci]: https://github.com/This-Liao/MineGuard/actions/workflows/ci.yml/badge.svg?branch=main
+[badge-external-ci]: https://github.com/This-Liao/MineGuard/actions/workflows/external-integration.yml/badge.svg?branch=main
 [badge-spring]: https://img.shields.io/badge/Spring_Boot-3.3.5-6DB33F?style=flat-square&logo=springboot&logoColor=white
 [badge-vue]: https://img.shields.io/badge/Vue-3-42B883?style=flat-square&logo=vuedotjs&logoColor=white
 [badge-ts]: https://img.shields.io/badge/TypeScript-5.7-3178C6?style=flat-square&logo=typescript&logoColor=white
