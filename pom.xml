@@ -106,6 +106,7 @@
                         <mineguard.llm.api-key>offline-test-secret</mineguard.llm.api-key>
                         <mineguard.llm.max-calls>0</mineguard.llm.max-calls>
                         <mineguard.vector-store.type>in-memory</mineguard.vector-store.type>
+                        <mineguard.embedding.provider>hashing</mineguard.embedding.provider>
                         <mineguard.industrial.type>mock</mineguard.industrial.type>
                         <mineguard.knowledge-path>data/knowledge</mineguard.knowledge-path>
                         <mineguard.trace-path>data/runtime/test-traces</mineguard.trace-path>

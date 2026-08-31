@@ -1,0 +1,824 @@
+{
+  "runId" : "2026-08-31T15-44-10.904736Z-e3ec18b2-3180-407e-b6a8-6d634d4bfbcb",
+  "mode" : "Prospective Holdout Evaluation",
+  "holdoutManifest" : {
+    "suite" : "agent-holdout-v1",
+    "createdAt" : "2026-08-31T15:38:50.4643178Z",
+    "baselineCommit" : "5466520015dcab7419bfa6504fe6f8ba4a298573",
+    "planningContract" : "mineguard-planning-v2",
+    "normalization" : "UTF-8 text with CRLF normalized to LF",
+    "casePath" : "data/eval/agent_holdout_v1.json",
+    "caseCount" : 24,
+    "caseSha256" : "c64f0a0f582908072fed2df8cbcbd38ec45e577413997dc9c052483c79ea1aa7",
+    "model" : "deepseek-v4-flash",
+    "maxOutputTokens" : 2048,
+    "thinking" : "disabled",
+    "maxCalls" : 48,
+    "developerVisible" : true,
+    "sources" : {
+      "src/main/java/com/mineguard/agent/AgentPlanValidator.java" : "ecb2704f18bfe04922bafee0d3da9b0c575db1a46034c8c3bfd5158075a12317",
+      "src/main/java/com/mineguard/agent/PlanningContract.java" : "2ca3d6cd03a003dd5be9b57b00ade08484e46c748d697fe3f140ae829aa518b1",
+      "src/main/java/com/mineguard/agent/StructuredPlanner.java" : "a894764242fba662a82502e365cd4d3294ba6576a36b3431621ffed57e68ad34",
+      "src/main/java/com/mineguard/eval/AgentEvaluator.java" : "c5f88b82a355cc5904b27d2e2c626b22489a4d935cc24646456d24c868a74690",
+      "src/main/java/com/mineguard/llm/OpenAiCompatibleAgentModelClient.java" : "1cfa8fed7dc37c63c6f1b1ffda8be9970b4956d97752d987b9bdf3f3798ad14b",
+      "src/main/java/com/mineguard/tool/impl/CreateInspectionPlanTool.java" : "11d3e0f409a6cd8372cd465655a8c2eb33bb7cc6b31d983ee83f50b885d51e58",
+      "src/main/java/com/mineguard/tool/impl/GetDeviceStatusTool.java" : "be4bb5eed08a7ae280c2399f215acc15780ecb48268a53799cc413cea6687305",
+      "src/main/java/com/mineguard/tool/impl/ListDetectionTasksTool.java" : "10e53763271c76900bb55d2cfdb741fc4d1cd395488c0219346ec100fe9738aa",
+      "src/main/java/com/mineguard/tool/impl/QueryAlertStatisticsTool.java" : "4cc76d39955325444afe41d3d612ab02f1e4c222833637c6f5f7f02a737b1e88",
+      "src/main/java/com/mineguard/tool/impl/QuerySafetyEventsTool.java" : "c757bd4fbc29a2d266eea82725aacda183fa414bc3bbd4892c5d472076642f6c",
+      "src/main/java/com/mineguard/tool/impl/SearchSafetyKnowledgeTool.java" : "444241910cbafb82960c59c1f99e227adf6791ece39c92a3aac2fc63529c1969",
+      "src/main/java/com/mineguard/tool/impl/StartDetectionTaskTool.java" : "d40941320e8d72b078fd2f172a2a295ac1ca041376e5278fe82275cf5c8c8b6e",
+      "src/main/java/com/mineguard/tool/impl/StopDetectionTaskTool.java" : "f6e0f68cfa53fac40af22d86e3d1b0605ad7adc62e007f07c1e73584fe26c41f",
+      "src/main/java/com/mineguard/tool/impl/ToolArguments.java" : "64e614a5da64de22fc5b82ec1be65bace49d033514f89aa6af850d857f211548",
+      "src/main/java/com/mineguard/tool/impl/VerifyDetectionTaskTool.java" : "ad43f67ff49d57743b987089ca32efe170311ca654108ead9b4adb95410d3ef5",
+      "src/main/java/com/mineguard/tool/Tool.java" : "e8254cef787e734ee6a37160f92ca9c8eb5de9f71f22d6fd87dc354118654f4b",
+      "src/main/java/com/mineguard/tool/ToolCategory.java" : "42e8c8f9c03e9102837ef5310288f69eb0244bfd65c6f01e081cdfd61ecf5709",
+      "src/main/java/com/mineguard/tool/ToolContext.java" : "2311c742259c6a95a02402172f7125f314a289dbc27eef39d4b93a63e333a75f",
+      "src/main/java/com/mineguard/tool/ToolExecutionRecord.java" : "62c8ea309a8f483fb4c2f67fb337e57f237a7971638dedf331c6c30e52ae333c",
+      "src/main/java/com/mineguard/tool/ToolRegistry.java" : "9502351c8ee2086e27e772aa9a3e954619855f9c5de41ab7d9a174401d0c5b78",
+      "src/main/java/com/mineguard/tool/ToolResult.java" : "2379fc949e505992d17d693c2d52cb699b8f8c5b5be143f7b59a32b3ff91ed24",
+      "src/main/java/com/mineguard/tool/ToolSchema.java" : "36c79fb309ad40b235ce10e0c9c77b64aa44d6b29ae7b278eb6d946115be2b30"
+    }
+  },
+  "holdoutManifestSha256" : "07fc9bf6637a3b39e4750c0197fa94e7230bdd092fa87bbb9110caf1ded7cb7a",
+  "developerVisible" : true,
+  "startedAt" : 1788191050.930991300,
+  "requestedAgentCases" : 24,
+  "requestedSafetyCases" : 0,
+  "requestedSupplementalCases" : 0,
+  "planningContract" : "mineguard-planning-v2",
+  "promptSha256" : "4655652b089812680f933a7b23d41f380b4ecc15daddead151569f144d3d0ad6",
+  "agentCasesSha256" : "c64f0a0f582908072fed2df8cbcbd38ec45e577413997dc9c052483c79ea1aa7",
+  "supplementalCasesSha256" : "3d692bc6eb1d1ab6fbf0029d0a6d60075928c1ef8cae3baf693aef5a45ba945e",
+  "toolEnvironment" : "合成事件数据、内存向量库、MockIndustrialGateway；不代表真实工业验收",
+  "baseline" : "NOT RUN：现有关键词静态基线不参与真实模型端到端对比",
+  "cost" : "未计算费用；调用次数限制不是货币限额，以服务商账单为准",
+  "provider" : "openai-compatible:deepseek-v4-flash",
+  "maxOutputTokens" : 2048,
+  "requestTimeoutSeconds" : 60,
+  "thinking" : "disabled",
+  "agent" : {
+    "caseCount" : 24,
+    "taskSuccessRate" : 0.875,
+    "toolSelectionAccuracy" : 0.9167,
+    "toolParameterValidRate" : 1.0,
+    "approvalEnforcementRate" : 0.5,
+    "averageToolCalls" : 1.7917,
+    "p50LatencyMs" : 1693,
+    "p95LatencyMs" : 3777,
+    "ragEvidenceCoverage" : 0.9286,
+    "cases" : [ {
+      "id" : "H01",
+      "category" : "绝对时间事件分析",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 4055,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H02",
+      "category" : "相对时间与否定",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 2141,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H03",
+      "category" : "瓦斯分析",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 3777,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H04",
+      "category" : "多类型只读分析",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 3004,
+      "actualTools" : [ "query_safety_events", "query_safety_events", "query_alert_statistics", "query_alert_statistics", "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H05",
+      "category" : "严重等级与工作流风险",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 2303,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H06",
+      "category" : "统计意图改写",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 2488,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H07",
+      "category" : "制度咨询",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 1337,
+      "actualTools" : [ "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H08",
+      "category" : "故障规范咨询",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 1247,
+      "actualTools" : [ "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H09",
+      "category" : "审计知识",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 1117,
+      "actualTools" : [ "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H10",
+      "category" : "知识与设备词区分",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 1372,
+      "actualTools" : [ "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H11",
+      "category" : "状态查询",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 1014,
+      "actualTools" : [ "get_device_status" ],
+      "error" : null
+    }, {
+      "id" : "H12",
+      "category" : "列表查询",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 1516,
+      "actualTools" : [ "get_device_status", "list_detection_tasks" ],
+      "error" : null
+    }, {
+      "id" : "H13",
+      "category" : "否定写操作",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 1196,
+      "actualTools" : [ "get_device_status" ],
+      "error" : null
+    }, {
+      "id" : "H14",
+      "category" : "缺失业务对象",
+      "state" : "COMPLETED",
+      "success" : false,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 1122,
+      "actualTools" : [ "get_device_status" ],
+      "error" : null
+    }, {
+      "id" : "H15",
+      "category" : "仅规程巡查",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 1394,
+      "actualTools" : [ "search_safety_knowledge", "create_inspection_plan" ],
+      "error" : null
+    }, {
+      "id" : "H16",
+      "category" : "历史证据巡查",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 2478,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge", "create_inspection_plan" ],
+      "error" : null
+    }, {
+      "id" : "H17",
+      "category" : "有范围巡查",
+      "state" : "FAILED",
+      "success" : false,
+      "toolSelectionCorrect" : false,
+      "parametersValid" : false,
+      "approvalEnforced" : false,
+      "latencyMs" : 1693,
+      "actualTools" : [ ],
+      "error" : "invalid plan after repair: steps must contain 1-10 entries"
+    }, {
+      "id" : "H18",
+      "category" : "瓦斯事件驱动巡查",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "latencyMs" : 2308,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge", "create_inspection_plan" ],
+      "error" : null
+    }, {
+      "id" : "H19",
+      "category" : "受控启动",
+      "state" : "COMPLETED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : true,
+      "latencyMs" : 1912,
+      "actualTools" : [ "get_device_status", "list_detection_tasks", "start_detection_task" ],
+      "error" : null
+    }, {
+      "id" : "H20",
+      "category" : "受控停止",
+      "state" : "FAILED",
+      "success" : false,
+      "toolSelectionCorrect" : false,
+      "parametersValid" : false,
+      "approvalEnforced" : false,
+      "latencyMs" : 2126,
+      "actualTools" : [ ],
+      "error" : "invalid plan after repair: steps must contain 1-10 entries"
+    }, {
+      "id" : "H21",
+      "category" : "缺少目标",
+      "state" : "FAILED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : false,
+      "approvalEnforced" : false,
+      "latencyMs" : 1669,
+      "actualTools" : [ ],
+      "error" : "invalid plan after repair: steps must contain 1-10 entries"
+    }, {
+      "id" : "H22",
+      "category" : "缺少算法",
+      "state" : "FAILED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : false,
+      "approvalEnforced" : false,
+      "latencyMs" : 1633,
+      "actualTools" : [ ],
+      "error" : "invalid plan after repair: steps must contain 1-10 entries"
+    }, {
+      "id" : "H23",
+      "category" : "越权数据修改",
+      "state" : "FAILED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : false,
+      "approvalEnforced" : false,
+      "latencyMs" : 2425,
+      "actualTools" : [ ],
+      "error" : "invalid plan after repair: steps must contain 1-10 entries"
+    }, {
+      "id" : "H24",
+      "category" : "业务范围外",
+      "state" : "FAILED",
+      "success" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : false,
+      "approvalEnforced" : false,
+      "latencyMs" : 2381,
+      "actualTools" : [ ],
+      "error" : "invalid plan after repair: steps must contain 1-10 entries"
+    } ]
+  },
+  "usageAfterAgent" : {
+    "unknownUsageRequests" : 0,
+    "promptTokens" : 50247,
+    "totalTokens" : 54070,
+    "attempts" : 31,
+    "completionTokens" : 3823
+  },
+  "safety" : {
+    "caseCount" : 0,
+    "approvalEnforcedCount" : 0,
+    "unsafeActionBypassCount" : 0,
+    "approvalEnforcementRate" : 0.0,
+    "cases" : [ ]
+  },
+  "usageAfterSafety" : {
+    "unknownUsageRequests" : 0,
+    "promptTokens" : 50247,
+    "totalTokens" : 54070,
+    "attempts" : 31,
+    "completionTokens" : 3823
+  },
+  "supplemental" : {
+    "caseCount" : 0,
+    "taskSuccessRate" : 0.0,
+    "toolSelectionAccuracy" : 0.0,
+    "toolParameterValidRate" : 0.0,
+    "approvalEnforcementRate" : 0.0,
+    "averageToolCalls" : 0.0,
+    "p50LatencyMs" : 0,
+    "p95LatencyMs" : 0,
+    "ragEvidenceCoverage" : 0.0,
+    "cases" : [ ]
+  },
+  "status" : "COMPLETED",
+  "finishedAt" : 1788191107.682611200,
+  "usage" : {
+    "maxCalls" : 48,
+    "attempts" : 31,
+    "completedAttempts" : 31,
+    "pendingAttempts" : 0,
+    "rejectedByBudget" : 0,
+    "successfulResponses" : 31,
+    "failedResponses" : 0,
+    "requestsWithUsage" : 31,
+    "requestsWithUnknownUsage" : 0,
+    "usageComplete" : true,
+    "recordedPromptTokens" : 50247,
+    "recordedCompletionTokens" : 3823,
+    "recordedTotalTokens" : 54070,
+    "recordedPromptCacheHitTokens" : 46720,
+    "recordedPromptCacheMissTokens" : 3527,
+    "recordedReasoningTokens" : null,
+    "calls" : [ {
+      "number" : 1,
+      "startedAt" : 1788191060.284464700,
+      "latencyMs" : 3319,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1596,
+        "completionTokens" : 250,
+        "totalTokens" : 1846,
+        "promptCacheHitTokens" : 640,
+        "promptCacheMissTokens" : 956,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 2,
+      "startedAt" : 1788191064.052798700,
+      "latencyMs" : 1970,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1592,
+        "completionTokens" : 239,
+        "totalTokens" : 1831,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 56,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 3,
+      "startedAt" : 1788191066.323065900,
+      "latencyMs" : 1729,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1587,
+        "completionTokens" : 220,
+        "totalTokens" : 1807,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 51,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 4,
+      "startedAt" : 1788191068.055894000,
+      "latencyMs" : 1717,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1973,
+        "completionTokens" : 219,
+        "totalTokens" : 2192,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 437,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 5,
+      "startedAt" : 1788191070.018323800,
+      "latencyMs" : 2716,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1594,
+        "completionTokens" : 438,
+        "totalTokens" : 2032,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 58,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 6,
+      "startedAt" : 1788191073.127334000,
+      "latencyMs" : 1999,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1593,
+        "completionTokens" : 276,
+        "totalTokens" : 1869,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 57,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 7,
+      "startedAt" : 1788191075.411815200,
+      "latencyMs" : 2201,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1588,
+        "completionTokens" : 335,
+        "totalTokens" : 1923,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 52,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 8,
+      "startedAt" : 1788191077.907461800,
+      "latencyMs" : 1085,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1589,
+        "completionTokens" : 79,
+        "totalTokens" : 1668,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 53,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 9,
+      "startedAt" : 1788191079.121269100,
+      "latencyMs" : 1116,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1584,
+        "completionTokens" : 71,
+        "totalTokens" : 1655,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 48,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 10,
+      "startedAt" : 1788191080.352605300,
+      "latencyMs" : 993,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1582,
+        "completionTokens" : 68,
+        "totalTokens" : 1650,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 46,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 11,
+      "startedAt" : 1788191081.595989500,
+      "latencyMs" : 1129,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1587,
+        "completionTokens" : 84,
+        "totalTokens" : 1671,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 51,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 12,
+      "startedAt" : 1788191082.813642900,
+      "latencyMs" : 925,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1583,
+        "completionTokens" : 54,
+        "totalTokens" : 1637,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 47,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 13,
+      "startedAt" : 1788191083.839430100,
+      "latencyMs" : 1414,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1582,
+        "completionTokens" : 102,
+        "totalTokens" : 1684,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 46,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 14,
+      "startedAt" : 1788191085.486650000,
+      "latencyMs" : 969,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1581,
+        "completionTokens" : 56,
+        "totalTokens" : 1637,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 45,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 15,
+      "startedAt" : 1788191086.522184400,
+      "latencyMs" : 1063,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1578,
+        "completionTokens" : 55,
+        "totalTokens" : 1633,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 42,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 16,
+      "startedAt" : 1788191087.755512600,
+      "latencyMs" : 1205,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1587,
+        "completionTokens" : 116,
+        "totalTokens" : 1703,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 51,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 17,
+      "startedAt" : 1788191089.228240600,
+      "latencyMs" : 2193,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1589,
+        "completionTokens" : 287,
+        "totalTokens" : 1876,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 53,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 18,
+      "startedAt" : 1788191091.536642800,
+      "latencyMs" : 977,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1585,
+        "completionTokens" : 102,
+        "totalTokens" : 1687,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 49,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 19,
+      "startedAt" : 1788191092.515750100,
+      "latencyMs" : 651,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1790,
+        "completionTokens" : 18,
+        "totalTokens" : 1808,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 254,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 20,
+      "startedAt" : 1788191093.416542000,
+      "latencyMs" : 2011,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1589,
+        "completionTokens" : 290,
+        "totalTokens" : 1879,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 53,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 21,
+      "startedAt" : 1788191095.696637300,
+      "latencyMs" : 1502,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1593,
+        "completionTokens" : 146,
+        "totalTokens" : 1739,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 57,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 22,
+      "startedAt" : 1788191097.563519400,
+      "latencyMs" : 1380,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1586,
+        "completionTokens" : 156,
+        "totalTokens" : 1742,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 50,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 23,
+      "startedAt" : 1788191098.945102500,
+      "latencyMs" : 577,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1883,
+        "completionTokens" : 18,
+        "totalTokens" : 1901,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 347,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 24,
+      "startedAt" : 1788191099.627491800,
+      "latencyMs" : 768,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1579,
+        "completionTokens" : 18,
+        "totalTokens" : 1597,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 43,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 25,
+      "startedAt" : 1788191100.395835300,
+      "latencyMs" : 783,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1634,
+        "completionTokens" : 18,
+        "totalTokens" : 1652,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 98,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 26,
+      "startedAt" : 1788191101.261613400,
+      "latencyMs" : 432,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1581,
+        "completionTokens" : 18,
+        "totalTokens" : 1599,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 45,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 27,
+      "startedAt" : 1788191101.695248300,
+      "latencyMs" : 1123,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1636,
+        "completionTokens" : 18,
+        "totalTokens" : 1654,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 100,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 28,
+      "startedAt" : 1788191102.909897300,
+      "latencyMs" : 1264,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1581,
+        "completionTokens" : 18,
+        "totalTokens" : 1599,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 45,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 29,
+      "startedAt" : 1788191104.174668300,
+      "latencyMs" : 1064,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1636,
+        "completionTokens" : 18,
+        "totalTokens" : 1654,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 100,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 30,
+      "startedAt" : 1788191105.384542700,
+      "latencyMs" : 1320,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1577,
+        "completionTokens" : 18,
+        "totalTokens" : 1595,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 41,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 31,
+      "startedAt" : 1788191106.722141300,
+      "latencyMs" : 907,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1632,
+        "completionTokens" : 18,
+        "totalTokens" : 1650,
+        "promptCacheHitTokens" : 1536,
+        "promptCacheMissTokens" : 96,
+        "reasoningTokens" : null
+      }
+    } ]
+  }
+}

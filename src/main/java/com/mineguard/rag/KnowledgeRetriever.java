@@ -22,15 +22,21 @@ public class KnowledgeRetriever {
 
     @PostConstruct
     public void index() {
-        List<VectorStore.VectorEntry> entries = loader.load().stream()
+        List<DocumentChunk> chunks = loader.load().stream()
                 .flatMap(document -> chunk(document).stream())
-                .map(chunk -> new VectorStore.VectorEntry(chunk, embeddingClient.embed(chunk.title() + " " + chunk.content())))
                 .toList();
+        List<float[]> vectors = embeddingClient.embedDocuments(chunks.stream().map(c -> c.title() + " " + c.content()).toList());
+        if (vectors.size() != chunks.size()) throw new IllegalStateException("文档与向量数量不一致");
+        List<VectorStore.VectorEntry> entries = new ArrayList<>();
+        for (int i = 0; i < chunks.size(); i++) {
+            if (vectors.get(i).length != embeddingClient.dimensions()) throw new IllegalStateException("文档向量维度不一致");
+            entries.add(new VectorStore.VectorEntry(chunks.get(i), vectors.get(i)));
+        }
         vectorStore.replaceAll(entries);
     }
 
     public List<Evidence> retrieve(String query, int topK) {
-        return vectorStore.search(embeddingClient.embed(query), topK).stream()
+        return vectorStore.search(embeddingClient.embedQuery(query), topK).stream()
                 .map(match -> new Evidence(match.chunk().documentId(), match.chunk().title(), match.chunk().chunkId(),
                         Math.round(match.score() * 10_000d) / 10_000d, match.chunk().content()))
                 .toList();

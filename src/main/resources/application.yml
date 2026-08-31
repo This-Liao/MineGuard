@@ -37,6 +37,15 @@ mineguard:
     request-timeout-seconds: ${MINEGUARD_LLM_TIMEOUT_SECONDS:60}
     # 留空适配通用接口；DeepSeek 评测脚本显式设置 disabled。
     thinking: ${MINEGUARD_LLM_THINKING:}
+  embedding:
+    provider: ${MINEGUARD_EMBEDDING_PROVIDER:hashing}
+    base-url: ${MINEGUARD_EMBEDDING_BASE_URL:http://127.0.0.1:18082/v1}
+    api-key: ${MINEGUARD_EMBEDDING_API_KEY:}
+    model: ${MINEGUARD_EMBEDDING_MODEL:BAAI/bge-small-zh-v1.5}
+    dimensions: ${MINEGUARD_EMBEDDING_DIMENSIONS:512}
+    timeout-seconds: ${MINEGUARD_EMBEDDING_TIMEOUT_SECONDS:60}
+    max-requests: ${MINEGUARD_EMBEDDING_MAX_REQUESTS:1000}
+    query-prefix: ${MINEGUARD_EMBEDDING_QUERY_PREFIX:}
   vector-store:
     type: ${MINEGUARD_VECTOR_STORE:in-memory}
     milvus-uri: ${MILVUS_URI:http://localhost:19530}

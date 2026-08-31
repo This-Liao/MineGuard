@@ -29,6 +29,8 @@ jobs:
           cache: maven
       - name: 离线回归与 JaCoCo 70% 门禁
         run: mvn --batch-mode --no-transfer-progress verify
+      - name: 向量服务 HTTP 契约（无模型下载）
+        run: python3 -m unittest discover -s scripts/embedding -p 'test_*.py' -v
       - name: 保存测试与覆盖率报告
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
