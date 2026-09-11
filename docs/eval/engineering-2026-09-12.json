@@ -1,0 +1,77 @@
+{
+  "recordedAt": "2026-09-12T03:55:58+08:00",
+  "environment": {
+    "os": "Windows",
+    "javaRuntime": "22.0.2",
+    "javaCompileTarget": 21,
+    "maven": "3.9.9",
+    "milvus": "2.5.10",
+    "postgresql": "16",
+    "node": "local installed runtime"
+  },
+  "verification": {
+    "backend": {
+      "command": "mvn -q -Pexternal-it clean verify",
+      "tests": 132,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "externalIntegration": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "scope": ["PostgreSQL", "Milvus", "multi-process recovery and SSE replay"]
+    },
+    "frontend": {
+      "command": "npm test && npm run build",
+      "tests": 28,
+      "failures": 0,
+      "productionBuild": "PASSED"
+    },
+    "embeddingHttpContract": {
+      "command": "python -m unittest discover -s scripts/embedding -p test_*.py -v",
+      "tests": 4,
+      "failures": 0
+    },
+    "jacocoInstruction": {
+      "covered": 16669,
+      "missed": 4591,
+      "total": 21260,
+      "coveredPercent": 78.41,
+      "minimumPercent": 70,
+      "gate": "PASSED"
+    }
+  },
+  "realModel": {
+    "provider": "LangChain4j AI Services / OpenAI-compatible",
+    "model": "deepseek-v4-flash",
+    "attempts": 1,
+    "httpStatus": 200,
+    "totalTokens": 1304,
+    "status": "COMPLETED",
+    "report": "docs/eval/langchain4j-smoke-2026-09-12.json"
+  },
+  "hybridRetrieval": {
+    "caseCount": 30,
+    "embeddingRequests": 31,
+    "isolatedMilvusCollectionDropped": true,
+    "recallAt5": {
+      "vector": 0.966666666666667,
+      "bm25": 0.9,
+      "rrf": 0.933333333333333
+    },
+    "mrrAt5": {
+      "vector": 0.877777777777778,
+      "bm25": 0.811111111111111,
+      "rrf": 0.819444444444444
+    },
+    "ndcgAt5": {
+      "vector": 0.897521908087601,
+      "bm25": 0.822366667476894,
+      "rrf": 0.843127905021853
+    },
+    "report": "docs/eval/hybrid-retrieval-v2/report.json"
+  }
+}

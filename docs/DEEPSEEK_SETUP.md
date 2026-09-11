@@ -2,11 +2,13 @@
 
 ## 当前状态
 
-客户端与流水线已经通过本机 HTTP 桩测试，并于 2026-08-31 实际完成 DeepSeek 评测。用户已明确本轮不限制调用次数；完整批次 55 次请求、55,397 Token，结果见 [真实验收](DEEPSEEK_ACCEPTANCE.md)。脚本保留每次运行的保护额度，仍不能把模拟用量写为真实指标。
+客户端与流水线已经通过本机 HTTP 桩测试，并于 2026-08-31 实际完成 DeepSeek 评测。2026-09-12 又通过 LangChain4j 1.20 AI Services 完成 `deepseek-v4-flash` 类型化计划调用：1 次请求、HTTP 200、1,304 Token，计划通过只读业务契约，见 [原始报告](eval/langchain4j-smoke-2026-09-12.json)。脚本保留每次运行的保护额度。
 
 Maven 普通测试固定使用确定性模型、测试凭据、H2 和内存向量库，不继承终端配置的付费模型或外部数据源。需要 HTTP 的客户端测试另启本机假服务。
 
 用户已提供 OpenAI-compatible 基础地址 `https://api.deepseek.com` 和三个模型 ID。脚本默认 `deepseek-v4-flash`，也允许显式选择 `deepseek-v4-pro` 或 `deepseek-v4-flash-vision-exp`。当前用例仅包含文本，不构成视觉模型评测。这里不使用 Anthropic 路径。
+
+页面 `-UseDeepSeek` 现在选择 `langchain4j-openai-compatible` provider。AI Services 返回固定的 `GeneratedPlan`、`GeneratedStep` 和参数对象，再转换为项目既有 `AgentPlan`；原 `StructuredPlanner`、业务契约、审批和工具执行链均保留。历史 `openai-compatible` provider 仍可用于复现旧评测。
 
 接口依据：[DeepSeek Chat Completion 官方文档](https://api-docs.deepseek.com/api/create-chat-completion/)、[思考模式说明](https://api-docs.deepseek.com/guides/thinking_mode/)。脚本使用非流式 JSON 输出、`max_tokens=2048`、`thinking.type=disabled` 和 60 秒请求超时；页面 SSE 是工作流事件流，不是模型 Token 流。
 
@@ -23,6 +25,9 @@ Maven 普通测试固定使用确定性模型、测试凭据、H2 和内存向�
 ```powershell
 # 前三条 Agent 用例；每条最多一次计划修复，最多发出六次模型请求。
 .\scripts\run-real-eval.ps1 -MaxCalls 6 -AgentCases 3
+
+# AI Services 单次只读结构化计划验收；上限 2，正常只使用 1 次。
+.\scripts\run-langchain4j-smoke.ps1 -MaxCalls 2 -Model deepseek-v4-flash
 ```
 
 完整固定用例为 30 条 Agent 加 20 条 Safety，参数是 `-MaxCalls 100 -AgentCases 30 -SafetyCases 20`。本轮已授权并运行。次数包括发送失败、超时、限流以及计划修复；不自动退还或重试。其他未获费用授权的环境中，API key 配置成功不等于任意费用授权。

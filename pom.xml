@@ -20,9 +20,33 @@
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
         <jacoco.version>0.8.12</jacoco.version>
+        <langchain4j.version>1.20.0</langchain4j.version>
+        <lucene.version>10.3.1</lucene.version>
     </properties>
 
     <dependencies>
+        <!-- AI Services 仅替换可选的模型适配层，工作流、工具和审批仍由现有 Spring 组件控制。 -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-open-ai</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+        <!-- Lucene 仅在进程内维护知识片段的 BM25 索引，不接管业务数据库。 -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>${lucene.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analysis-common</artifactId>
+            <version>${lucene.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -107,6 +131,7 @@
                         <mineguard.llm.max-calls>0</mineguard.llm.max-calls>
                         <mineguard.vector-store.type>in-memory</mineguard.vector-store.type>
                         <mineguard.embedding.provider>hashing</mineguard.embedding.provider>
+                        <mineguard.retrieval.mode>vector</mineguard.retrieval.mode>
                         <mineguard.industrial.type>mock</mineguard.industrial.type>
                         <mineguard.knowledge-path>data/knowledge</mineguard.knowledge-path>
                         <mineguard.trace-path>data/runtime/test-traces</mineguard.trace-path>

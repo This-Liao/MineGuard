@@ -21,12 +21,16 @@ public final class RetrievalBenchmark {
                     .map(Evidence::documentId).distinct().limit(5).toList();
             details.add(score(item.id(), item.query(), item.expectedDocumentIds(), actual));
         }
+        return summarize(details);
+    }
+    public static Result summarize(List<CaseResult> details) {
+        if (details.isEmpty()) throw new IllegalArgumentException("检索评测结果不能为空");
         return new Result(details.size(), average(details, 1), average(details, 3), average(details, 5),
                 details.stream().mapToDouble(c -> c.reciprocalRankAt5).average().orElseThrow(),
                 details.stream().mapToDouble(c -> c.ndcgAt5).average().orElseThrow(),
                 details.stream().filter(c -> c.recallAt5 > 0).count() / (double) details.size(), details);
     }
-    static CaseResult score(String id, String query, List<String> relevant, List<String> actual) {
+    public static CaseResult score(String id, String query, List<String> relevant, List<String> actual) {
         Set<String> expected = new LinkedHashSet<>(relevant);
         if (expected.isEmpty() || expected.contains(null)) throw new IllegalArgumentException("必须标注相关文档");
         List<String> ranked = actual.stream().distinct().limit(5).toList();

@@ -1,0 +1,58 @@
+{
+  "runId" : "2026-09-11T19-51-21.245320300Z-dd467f78-5c57-4278-8d50-468905e4cbcd",
+  "startedAt" : "2026-09-11T19:51:21.275605600Z",
+  "provider" : "LangChain4j AI Services / OpenAI-compatible",
+  "baseUrl" : "https://api.deepseek.com",
+  "model" : "deepseek-v4-flash",
+  "requestLimit" : 2,
+  "planningContract" : "mineguard-planning-v2",
+  "query" : "请检索安全帽的现场检查规范，只汇报知识依据。",
+  "plan" : {
+    "intent" : "检索安全帽现场检查规范的知识依据",
+    "riskLevel" : "LOW",
+    "steps" : [ {
+      "id" : "s1",
+      "type" : "SEARCH_SAFETY_KNOWLEDGE",
+      "description" : "检索安全帽现场检查规范相关知识",
+      "args" : {
+        "topK" : 5,
+        "query" : "安全帽 现场检查规范"
+      }
+    } ]
+  },
+  "status" : "COMPLETED",
+  "usage" : {
+    "maxCalls" : 2,
+    "attempts" : 1,
+    "completedAttempts" : 1,
+    "pendingAttempts" : 0,
+    "rejectedByBudget" : 0,
+    "successfulResponses" : 1,
+    "failedResponses" : 0,
+    "requestsWithUsage" : 1,
+    "requestsWithUnknownUsage" : 0,
+    "usageComplete" : true,
+    "recordedPromptTokens" : 1236,
+    "recordedCompletionTokens" : 68,
+    "recordedTotalTokens" : 1304,
+    "recordedPromptCacheHitTokens" : null,
+    "recordedPromptCacheMissTokens" : null,
+    "recordedReasoningTokens" : null,
+    "calls" : [ {
+      "number" : 1,
+      "startedAt" : 1789156281.493740600,
+      "latencyMs" : 1282,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1236,
+        "completionTokens" : 68,
+        "totalTokens" : 1304,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    } ]
+  },
+  "finishedAt" : "2026-09-11T19:51:22.784799Z"
+}

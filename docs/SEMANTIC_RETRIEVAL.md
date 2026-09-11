@@ -1,8 +1,25 @@
-# BGE 语义检索与独立对照评测
+# BGE、Milvus、BM25 与 RRF 混合检索
 
-当前支持真正的语义 Embedding：Java 调用 OpenAI-compatible `/embeddings`，本地 BGE 服务以 CPU 执行 ONNX 模型。默认离线回归仍使用哈希向量，二者是明确选择的配置，不会在推理失败时静默互相替代。
+当前支持真正的语义 Embedding：Java 调用 OpenAI-compatible `/embeddings`，本地 BGE 服务以 CPU 执行 ONNX 模型。应用默认并行执行已配置 `VectorStore` 的向量检索与 Lucene BM25，再用 RRF 统一排序；选择 Milvus 时即为 Milvus + BM25。普通离线测试显式固定为哈希向量单路。任一真实通道失败都会显式报错，不静默换成另一套实现。
 
-## 一次性对照结果
+## Milvus + BM25 + RRF 三路回归
+
+2026-09-12 使用同一批 30 条固定查询、20 篇知识文档和相同文档级评分器，完成了真实 BGE + Milvus、Lucene BM25 和等权 RRF 三路对照。查询、语料、实现、模型版本与 `candidateK=20`、`rrfK=60` 在运行前写入冻结清单。
+
+| 文档级指标 | BGE + Milvus 向量 | Lucene BM25 | RRF 融合 |
+| --- | ---: | ---: | ---: |
+| Recall@1 | 65.00% | 56.67% | 56.67% |
+| Recall@3 | 96.67% | 86.67% | 90.00% |
+| Recall@5 | **96.67%** | **90.00%** | **93.33%** |
+| MRR@5 | 0.8778 | 0.8111 | 0.8194 |
+| nDCG@5 | 0.8975 | 0.8224 | 0.8431 |
+| HitRate@5 | 96.67% | 90.00% | 93.33% |
+
+本轮共发起 31 次本地 BGE 请求（1 次文档批处理、30 次查询），向量实际写入 Milvus 2.5 的随机隔离集合，完成后集合已删除。原始报告保存每题的向量、BM25 与融合排名：[完整 JSON](eval/hybrid-retrieval-v2/report.json)。
+
+等权 RRF 在这批以自然语言改写为主的查询上没有超过语义向量单路，因此不能将 93.33% 描述为检索质量提升。它补齐了关键词通道和可审计分路排名；`安全帽`、`CAMERA-19`、`intrusion_detection` 的精确词能力由 Lucene 契约测试单独覆盖。后续若调整通道权重或增加 Rerank，应另建数据集，避免拿本轮结果反向调参后仍称留出评测。
+
+## 历史语义向量对照
 
 30 条新查询与相关文档标注、20 篇知识文档、评分器和模型版本在 `2932cfe` 提交后才执行。两组使用同一语料、分块、内存余弦检索与文档去重规则；没有 Rerank，没有根据结果调参后重跑。
 
@@ -53,13 +70,18 @@ $env:MINEGUARD_EMBEDDING_BASE_URL = 'http://127.0.0.1:18082/v1'
 $env:MINEGUARD_EMBEDDING_MODEL = 'BAAI/bge-small-zh-v1.5'
 $env:MINEGUARD_EMBEDDING_DIMENSIONS = '512'
 $env:MINEGUARD_EMBEDDING_QUERY_PREFIX = '为这个句子生成表示以用于检索相关文章：'
+$env:MINEGUARD_VECTOR_STORE = 'milvus'
+$env:MILVUS_URI = 'http://127.0.0.1:19540'
+$env:MINEGUARD_RETRIEVAL_MODE = 'hybrid'
+$env:MINEGUARD_RETRIEVAL_CANDIDATE_K = '20'
+$env:MINEGUARD_RETRIEVAL_RRF_K = '60'
 # 新环境：.\scripts\start-local-demo.ps1
 # 已有环境：.\scripts\restart-local-demo.ps1 -RunPath '<已有目录>' -UseDeepSeek
 ```
 
 `.env.example` 只是模板，不自动读取。规划模型与向量模型的 API key 独立；远端 HTTPS Embedding 服务使用 `MINEGUARD_EMBEDDING_API_KEY`，不要复用 DeepSeek key。远端服务需兼容 float 编码、批处理和索引字段；实际返回维度必须与配置一致。
 
-更换模型、维度或 query prefix 后必须重建索引。Milvus 的集合维度也必须一致，使用新集合验收后再切换；不能把 512 维向量写进既有 768 维集合。本次质量对照使用内存向量库，不宣称已完成 BGE + Milvus 联合质量验收。
+更换模型、维度或 query prefix 后必须重建索引。Milvus 的集合维度也必须一致，使用新集合验收后再切换；不能把 512 维向量写进既有 768 维集合。历史 v1 质量对照使用内存向量库；上面的 v2 三路回归已经完成 BGE + Milvus + Lucene 联合验收。
 
 ## 复现与回归
 
@@ -67,10 +89,13 @@ $env:MINEGUARD_EMBEDDING_QUERY_PREFIX = '为这个句子生成表示以用于检
 # 已启动 18082 服务后；不读取 DeepSeek key，不连接业务数据库
 .\scripts\run-retrieval-eval.ps1
 
+# 自动启动隔离 Milvus；需要本机已准备 BGE 模型与虚拟环境
+.\scripts\run-hybrid-retrieval-eval.ps1
+
 # 只测 HTTP 契约，无权重下载、无模型推理
 python -m unittest discover -s scripts/embedding -p 'test_*.py' -v
 ```
 
-检索冻结清单在 `data/eval/retrieval_v1_manifest.json`，含查询、语料和实现的 LF 规范化 SHA-256。运行前检查清单；本工作区 `retrieval-v1-attempt.txt` 防止自动重复覆盖首轮实验。新的仓库副本可以复现，但公开后复测不再算新的留出证据。后续质量优化必须另建版本和对照协议。
+历史语义对照冻结清单在 `data/eval/retrieval_v1_manifest.json`；三路回归清单在 `data/eval/hybrid_retrieval_v2_manifest.json`。两者均记录查询、语料、实现和模型配置摘要。v2 复用已经公开的 v1 查询，只用于同数据版本比较，不算新的留出证据。
 
 Java 契约测试覆盖超时、请求预算、模型/维度/数量/索引错误、非法向量、凭据隔离与禁止降级；Python 契约测试在 CI 中使用明确的测试替身。真实 BGE 推理证据单独记录，不与替身测试混称。

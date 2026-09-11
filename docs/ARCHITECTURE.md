@@ -9,7 +9,7 @@
                              ↓
 工作节点 → 数据库租约 / fencing / 版本检查 → 检查点 + 顺序事件
                              ↓
-结构化规划 → Tool Registry → 工业 HTTP 接收端
+结构化规划 → LangChain4j AI Services → Tool Registry → 工业 HTTP 接收端
                              ↓
                       独立状态验证 → 终态
 数据库事件 → 带认证的 SSE → Vue 时间线
@@ -98,13 +98,28 @@ IndustrialContractServer 是可独立运行的本地契约服务，采用 H2 保
 
 ## RAG、数据与评测
 
-SQL 负责完整的时间/区域/严重度过滤与计数；RAG 返回 documentId、chunkId、score 和内容证据。默认哈希 Embedding 与内存向量库用于可复现工程回归，Milvus REST 适配通过独立容器测试；不代表真实语义质量或完整生产集群验收。
+SQL 负责完整的时间/区域/严重度过滤与计数；RAG 返回 `documentId`、`chunkId`、分数和内容证据。检索路径保持在现有 `KnowledgeRetriever` 边界内，没有引入第二套 Agent 框架：
 
-可选 `openai-compatible` Embedding 已接入；本地 BGE-small-zh-v1.5 使用 INT8 ONNX CPU 推理、CLS 池化与 L2 归一化。文档批量编码、查询独立前缀、返回索引与维度验证；超时或错误禁止静默降级为哈希。所有文档编码成功后才替换索引。模型和向量库独立配置，更换维度必须重建对应集合。实现与真实语义对照见 [语义检索评测](SEMANTIC_RETRIEVAL.md)。
+```mermaid
+flowchart LR
+    Q[查询] --> V[BGE Embedding]
+    V --> M[Milvus 向量检索]
+    Q --> L[Lucene CJKAnalyzer]
+    L --> B[BM25 关键词检索]
+    M --> R[RRF 统一排序]
+    B --> R
+    R --> E[Evidence + 三路排名]
+```
+
+向量与 BM25 由两个固定线程并行执行；每路先取 `candidate-k` 个候选，RRF 按 `1 / (rrf-k + rank)` 累加，不直接混合不可比的余弦分数和 BM25 分数。融合失败不静默退回单路。Lucene 使用 `CJKAnalyzer` 与 `BM25Similarity`，并为 `camera-19`、`intrusion_detection` 等设备/算法标识建立精确词字段；中文“安全帽”等术语由 CJK 分词召回。每次知识重建同时替换已配置的向量库快照与进程内 BM25 快照。
+
+可选 `openai-compatible` Embedding 已接入；本地 BGE-small-zh-v1.5 使用 INT8 ONNX CPU 推理、CLS 池化与 L2 归一化。文档批量编码、查询独立前缀、返回索引与维度验证；超时或错误禁止静默降级为哈希。模型和向量库独立配置，更换维度必须重建对应集合。默认应用模式是 `hybrid`，普通测试显式固定 `vector` 以保持原有离线回归口径。实现与三路结果见 [混合检索评测](SEMANTIC_RETRIEVAL.md)。
+
+规划模型侧新增 `langchain4j-openai-compatible` provider：LangChain4j AI Services 直接返回 `GeneratedPlan` / `GeneratedStep` 类型，固定参数对象再转换为现有 `AgentPlan`。原 `StructuredPlanner`、`PlanningContract`、工具注册、审批和执行引擎继续作为后端权威；AI Services 不直接执行工具。旧 `openai-compatible` 与确定性 provider 仍保留，便于历史报告复现。
 
 确定性快照、DeepSeek 实测、HTTP 模型桩测试分开保存。真实评测固定使用隔离 H2、合成数据和 Mock 工业网关，禁止让自动审批评测控制真实设备。原有关键词基线不执行工具，不能用于端到端模型优劣结论。
 
-Planning v2 的 24 条新题采用冻结源摘要与单次运行标记，首轮结果为 21/24；与旧固定 29/30 分开报告。见 [留出协议](HOLDOUT_PROTOCOL.md)、[首轮结果](HOLDOUT_EVAL.md) 和 [当前评测总览](EVAL_REPORT.md)。普通 CI 仅执行离线测试；外部集成通过手动或 nightly 工作流独立运行。
+Planning v2 的 24 条新题采用冻结源摘要与单次运行标记，首轮结果为 21/24；与旧固定 29/30 分开报告。混合检索 v2 复用已有 30 条固定查询做版本回归，不称新增留出集；实际使用 BGE、Milvus、Lucene 并归档三路排名。见 [留出协议](HOLDOUT_PROTOCOL.md)、[首轮结果](HOLDOUT_EVAL.md) 和 [当前评测总览](EVAL_REPORT.md)。普通 CI 仅执行离线测试；外部集成通过手动或 nightly 工作流独立运行。
 
 ## 部署与未完成项
 

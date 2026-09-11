@@ -14,11 +14,13 @@
 [![Vue][badge-vue]](frontend/package.json)
 [![TypeScript][badge-ts]](frontend/package.json)
 [![DeepSeek][badge-deepseek]](docs/DEEPSEEK_SETUP.md)
+[![LangChain4j][badge-langchain4j]](pom.xml)
+[![Lucene BM25][badge-lucene]](docs/SEMANTIC_RETRIEVAL.md)
 
 [![GitHub Actions CI][badge-ci]](https://github.com/This-Liao/MineGuard/actions/workflows/ci.yml)
 [![外部集成 CI][badge-external-ci]](https://github.com/This-Liao/MineGuard/actions/workflows/external-integration.yml)
-[![后端回归：126 项通过][badge-tests]](docs/ENGINEERING_ACCEPTANCE.md)
-[![指令覆盖率：82.84%][badge-coverage]](docs/ENGINEERING_ACCEPTANCE.md)
+[![后端回归：132 项通过][badge-tests]](docs/ENGINEERING_ACCEPTANCE.md)
+[![指令覆盖率：78.41%][badge-coverage]](docs/ENGINEERING_ACCEPTANCE.md)
 [![GitHub Stars][badge-stars]](https://github.com/This-Liao/MineGuard/stargazers)
 
 [操作演示](#实际操作演示) · [快速开始](#快速开始) · [核心能力](#核心能力) · [评测结果](#评测与质量) · [文档导航](#文档导航) · [反馈问题](https://github.com/This-Liao/MineGuard/issues)
@@ -67,8 +69,8 @@ MineGuard 将“查询事件 → 分析告警 → 检索规程 → 审批操作 
 
 | 能力 | 你能得到什么 | 实现与说明 |
 | :--- | :--- | :--- |
-| 🧠 结构化规划 | 把中文任务拆解成有明确参数与风险等级的工具步骤 | 完整工具契约、计划校验、最多一次模型修复 |
-| 🔎 数据与知识检索 | SQL 负责明细和统计，RAG 提供可追溯的规程片段 | `documentId`、`chunkId`、原文及检索相关度 |
+| 🧠 结构化规划 | 把中文任务拆解成有明确参数与风险等级的工具步骤 | LangChain4j AI Services 类型化输出、完整工具契约、计划校验 |
+| 🔎 混合知识检索 | 并行召回语义内容与精确关键词 | Milvus 向量 + Lucene BM25 + RRF；保留三路排名与片段来源 |
 | 📝 中文证据化汇报 | 用自然语言展示发现与处置参考，句末引用可点击 | 关联工具回执与知识原文，兼容历史任务，无额外模型调用 |
 | 🔐 人工审批与权限 | 发起、审批、观察、账号管理职责分离 | RBAC、租户隔离、禁止自批、计划摘要与审批有效期 |
 | ♻️ 持久化与恢复 | 重启后保留任务，跨节点接管与重放 SSE | 数据库租约、续期、fencing token、版本检查与检查点 |
@@ -82,12 +84,12 @@ MineGuard 将“查询事件 → 分析告警 → 检索规程 → 审批操作 
 | :--- | :--- |
 | 后端 | Java 21+、Spring Boot 3.3.5、Spring Security、JDBC、Flyway |
 | 前端 | Vue 3、TypeScript、Vite、Vitest、Vue Test Utils |
-| 模型 | DeepSeek OpenAI-compatible API；离线模式使用确定性模型 |
+| 模型 | LangChain4j 1.20 AI Services + DeepSeek OpenAI-compatible API；离线模式使用确定性模型 |
 | 数据库 | 单机文件 H2；多实例共享 PostgreSQL |
-| 知识检索 | BGE 语义 Embedding / OpenAI-compatible 接口；内存向量库 / Milvus；离线回归使用哈希向量 |
+| 知识检索 | BGE 语义 Embedding、Milvus、Lucene 10.3 BM25、RRF；离线回归可固定为哈希向量单路 |
 | 质量保障 | JUnit、Maven Surefire/Failsafe、JaCoCo、Docker 集成环境 |
 
-默认哈希 Embedding 用于可复现工程回归；本地 BGE-small-zh-v1.5（INT8 ONNX）已完成真实 CPU 推理与独立检索对照。[启用语义检索](docs/SEMANTIC_RETRIEVAL.md)
+默认运行模式使用向量 + BM25 的 RRF 融合；普通测试显式固定为哈希向量单路，避免改变历史回归语义。本地 BGE-small-zh-v1.5（INT8 ONNX）已与 Milvus、Lucene 完成三路对照。[启用混合检索](docs/SEMANTIC_RETRIEVAL.md)
 
 </details>
 
@@ -210,6 +212,8 @@ cd ..
 | --- | --- | --- |
 | Planning v2 冻结后新增 24 题 | 单轮 **21/24 · 87.50%**；31 次真实 DeepSeek 请求，54,070 Token | [留出报告](docs/HOLDOUT_EVAL.md) |
 | 同一批 30 条新检索查询 | 哈希 → BGE：Recall@5 **86.67% → 96.67%**；MRR@5 **0.7622 → 0.8778** | [语义检索对照](docs/SEMANTIC_RETRIEVAL.md) |
+| BGE + Milvus / BM25 / RRF 三路回归 | Recall@5 **96.67% / 90.00% / 93.33%**；保留每题三路排名 | [混合检索报告](docs/SEMANTIC_RETRIEVAL.md#milvus--bm25--rrf-三路回归) |
+| LangChain4j AI Services 真实调用 | `deepseek-v4-flash` 1/1 成功；1,304 Token，结构化计划通过只读契约 | [原始调用报告](docs/eval/langchain4j-smoke-2026-09-12.json) |
 
 两类实验均在运行前冻结用例与配置，保留全部失败；由开发者预先标注，不称第三方盲测。固定回归、Agent 留出和检索 Recall 使用不同分母，分别解释。
 
@@ -217,11 +221,11 @@ cd ..
 
 | 验收项 | 记录结果 | 核验来源 |
 | :--- | :--- | :--- |
-| 后端测试 | **126 项通过** | Surefire |
+| 后端测试 | **132 项通过** | Surefire |
 | 外部服务 / 多进程恢复 | **3 项通过** | PostgreSQL、Milvus、进程接管与 SSE |
 | 前端交互测试 | **28 项通过** | Vitest + Vue Test Utils |
 | 向量侧车 HTTP 契约 | **4 项通过** | Python unittest；不冒充模型推理 |
-| JaCoCo 指令覆盖率 | **82.84%**，构建门禁 ≥ 70% | 15211 / 18363 条指令 |
+| JaCoCo 指令覆盖率 | **78.41%**，构建门禁 ≥ 70% | 16669 / 21260 条指令 |
 | 前端构建 | 类型检查与生产构建通过 | `vue-tsc` + Vite |
 
 顶部 **CI 徽章**展示 GitHub Actions 的真实运行状态；“后端回归”和覆盖率徽章保留上述日期的验收快照。每次 push / PR 执行 Java 测试与覆盖率门禁、前端测试和构建；外部 PostgreSQL / Milvus 验收单独支持手动与每日定时运行。详见 [CI 说明](docs/CI.md)、[当前评测总览](docs/EVAL_REPORT.md) 与 [简历指标](docs/RESUME_METRICS.md)。
@@ -258,6 +262,10 @@ mvn clean verify
 .\scripts\run-external-it.ps1
 # 真实付费调用；包含至多一次计划修复
 .\scripts\run-real-eval.ps1 -MaxCalls 100 -AgentCases 30 -SafetyCases 20
+# LangChain4j AI Services 单次只读真实调用验收
+.\scripts\run-langchain4j-smoke.ps1 -MaxCalls 2
+# 启动隔离 Milvus 与本地 BGE，比较向量、BM25 和 RRF
+.\scripts\run-hybrid-retrieval-eval.ps1
 # 完整新版对照，附加 12 条用例单独计分
 .\scripts\run-real-eval.ps1 -MaxCalls 124 -AgentCases 30 -SafetyCases 20 -SupplementalCases 12
 # 前端离线交互回归
@@ -308,7 +316,7 @@ MineGuard/
 │   ├── workflow/                # 状态机、持久化、调度租约与恢复
 │   ├── security/                # 身份、角色、租户与任务权限
 │   ├── tool/                    # 工具注册、参数校验与执行
-│   ├── rag/                     # 知识加载、检索与向量库适配
+│   ├── rag/                     # Milvus 向量、Lucene BM25 与 RRF 融合
 │   ├── device/                  # 工业网关与 HTTP 适配
 │   └── eval/                    # 固定用例与真实模型评测
 ├── src/main/resources/db/        # Flyway 数据库迁移
@@ -341,12 +349,11 @@ MineGuard/
 | 如何接入 DeepSeek、计算 Token | [接入指南](docs/DEEPSEEK_SETUP.md) · [真实模型评测](docs/DEEPSEEK_ACCEPTANCE.md) |
 | 30% 如何改进到 96.67% | [改进过程、原始证据与失败边界](docs/PLANNING_IMPROVEMENT.md) |
 | 未参与优化的新题表现如何 | [留出协议](docs/HOLDOUT_PROTOCOL.md) · [24 题首轮结果](docs/HOLDOUT_EVAL.md) |
-| 如何启用真实语义向量 | [BGE 启动与独立 Retrieval Eval](docs/SEMANTIC_RETRIEVAL.md) |
+| 如何启用混合检索 | [BGE、Milvus、BM25 与 RRF 评测](docs/SEMANTIC_RETRIEVAL.md) |
 | 当前指标与 CI 是否可核查 | [评测总览](docs/EVAL_REPORT.md) · [简历指标](docs/RESUME_METRICS.md) · [工程验收](docs/ENGINEERING_ACCEPTANCE.md) · [CI](docs/CI.md) |
 | 中文结果与引用如何实现 | [任务汇报与引用溯源](docs/TASK_REPORT.md) |
 | 如何对接工业服务 | [工业 API 映射](docs/INDUSTRIAL_API_MAPPING.md) · [接入资料清单](docs/COLLABORATION_CHECKLIST.md) |
 | 项目早期设计和验收过程 | [历史阶段报告](FINAL_REPORT.md) |
-
 
 ## 交流与反馈
 
@@ -369,6 +376,8 @@ MineGuard/
 [badge-vue]: https://img.shields.io/badge/Vue-3-42B883?style=flat-square&logo=vuedotjs&logoColor=white
 [badge-ts]: https://img.shields.io/badge/TypeScript-5.7-3178C6?style=flat-square&logo=typescript&logoColor=white
 [badge-deepseek]: https://img.shields.io/badge/DeepSeek-OpenAI_compatible-536AF5?style=flat-square
-[badge-tests]: https://img.shields.io/badge/%E5%90%8E%E7%AB%AF%E5%9B%9E%E5%BD%92-126_%E9%A1%B9%E9%80%9A%E8%BF%87-21816B?style=flat-square
-[badge-coverage]: https://img.shields.io/badge/%E6%8C%87%E4%BB%A4%E8%A6%86%E7%9B%96%E7%8E%87-82.84%25-21816B?style=flat-square
+[badge-langchain4j]: https://img.shields.io/badge/LangChain4j-1.20.0-5B4BDB?style=flat-square
+[badge-lucene]: https://img.shields.io/badge/Lucene-BM25-F58A07?style=flat-square&logo=apachelucene&logoColor=white
+[badge-tests]: https://img.shields.io/badge/%E5%90%8E%E7%AB%AF%E5%9B%9E%E5%BD%92-132_%E9%A1%B9%E9%80%9A%E8%BF%87-21816B?style=flat-square
+[badge-coverage]: https://img.shields.io/badge/%E6%8C%87%E4%BB%A4%E8%A6%86%E7%9B%96%E7%8E%87-78.41%25-21816B?style=flat-square
 [badge-stars]: https://img.shields.io/github/stars/This-Liao/MineGuard?style=flat-square&logo=github&label=Stars&color=5865F2

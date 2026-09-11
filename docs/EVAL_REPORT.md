@@ -1,6 +1,6 @@
 # MineGuard 当前评测总览
 
-更新日期：2026-09-01。本文件是当前证据入口，不再由离线评测覆盖。
+更新日期：2026-09-12。本文件是当前证据入口，不再由离线评测覆盖。
 
 ## 真实模型与工程验收
 
@@ -10,12 +10,16 @@
 | Planning v2 第一次 | Agent 29/30（96.67%），补充 12/12；74 次请求，125091 Token | [第一次 JSON](eval/deepseek-v2-run1-2026-08-31.json) |
 | Planning v2 第二次 | Agent 29/30（96.67%），补充 12/12；69 次请求，118104 Token | [第二次 JSON](eval/deepseek-v2-2026-08-31.json) |
 | Planning v2 新增留出集 | 21/24（87.50%）；31 次真实请求、54,070 Token；冻结后只跑一次 | [首轮报告](HOLDOUT_EVAL.md) · [原始 JSON](eval/holdout-v1/report.json) |
+| LangChain4j AI Services 冒烟验收 | `deepseek-v4-flash` 1/1；1 次请求、1,304 Token；类型化只读计划通过业务契约 | [原始 JSON](eval/langchain4j-smoke-2026-09-12.json) |
 | 独立语义检索对照 | 30 条新查询：哈希 / BGE 的 Recall@5 为 86.67% / 96.67%，MRR@5 为 0.7622 / 0.8778 | [方法与结果](SEMANTIC_RETRIEVAL.md) · [原始 JSON](eval/retrieval-v1/report.json) |
-| 工程验收（2026-09-01） | 126 后端 + 3 外部集成 + 28 前端 + 4 向量契约测试通过；JaCoCo 指令覆盖率 82.84% | [当前工程验收](ENGINEERING_ACCEPTANCE.md) |
+| Milvus / BM25 / RRF 三路回归 | Recall@5 为 96.67% / 90.00% / 93.33%，MRR@5 为 0.8778 / 0.8111 / 0.8194 | [方法与边界](SEMANTIC_RETRIEVAL.md#milvus--bm25--rrf-三路回归) · [完整排名 JSON](eval/hybrid-retrieval-v2/report.json) |
+| 工程验收（2026-09-12） | 132 后端 + 3 外部集成 + 28 前端 + 4 向量契约测试通过；JaCoCo 指令覆盖率 78.41% | [当前工程验收](ENGINEERING_ACCEPTANCE.md) · [快照 JSON](eval/engineering-2026-09-12.json) |
 
 真实模型已经运行。历史 JSON 中的 `realModelEvaluation.status = NOT RUN` 只描述那一次离线运行，不代表项目当前状态。历史值不反向修改。
 
 严格成功同时检查终态、风险、完整工具集合与审批行为；A07 未通过项保留。两轮重复题和 12 条开发者可见补充题不合并为独立盲测。原始批次为 30 Agent + 20 Safety，新版每批另含 12 条补充，整批 Token 不能直接当作等量成本对比。详见 [规划器改进报告](PLANNING_IMPROVEMENT.md)。
+
+混合检索 v2 复用已公开的 30 条语义查询，是版本回归，不是新增留出集。等权 RRF 没有超过向量单路，报告保留该结果；BM25 对中文术语、设备编号和算法 ID 的精确召回由独立契约测试验证。
 
 ## 报告更新规则
 

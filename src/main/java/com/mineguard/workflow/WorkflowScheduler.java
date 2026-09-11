@@ -3,6 +3,7 @@ package com.mineguard.workflow;
 import com.mineguard.config.MineGuardProperties;
 import com.mineguard.config.RuntimeProperties;
 import jakarta.annotation.PreDestroy;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import java.util.Map;
@@ -23,7 +24,8 @@ public class WorkflowScheduler {
     private final Map<String, Lease> active = new ConcurrentHashMap<>();
     private volatile boolean stopped;
 
-    public WorkflowScheduler(JdbcAgentTaskStore store, AgentWorkflowEngine engine, ExecutorService workflowExecutor,
+    public WorkflowScheduler(JdbcAgentTaskStore store, AgentWorkflowEngine engine,
+                             @Qualifier("workflowExecutor") ExecutorService workflowExecutor,
                              RuntimeProperties runtime, MineGuardProperties config) {
         this.store = store; this.engine = engine; this.executor = workflowExecutor; this.runtime = runtime;
         this.capacity = Math.max(1, config.workflowExecutorThreads());

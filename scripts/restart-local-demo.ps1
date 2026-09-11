@@ -52,7 +52,7 @@ try {
     if ($UseDeepSeek) {
         $env:OPENAI_API_KEY = (Get-Content -LiteralPath (Join-Path $ProjectRoot 'key.txt') -Raw -Encoding UTF8).Trim()
         if (!$env:OPENAI_API_KEY -or $env:OPENAI_API_KEY -match '\s') { throw 'key.txt 必须仅包含一行有效密钥。' }
-        $modelArgs = '--mineguard.llm.provider=openai-compatible --mineguard.llm.base-url=https://api.deepseek.com --mineguard.llm.model=deepseek-v4-flash --mineguard.llm.max-calls=1000 --mineguard.llm.max-output-tokens=2048 --mineguard.llm.request-timeout-seconds=60 --mineguard.llm.thinking=disabled'
+        $modelArgs = '--mineguard.llm.provider=langchain4j-openai-compatible --mineguard.llm.base-url=https://api.deepseek.com --mineguard.llm.model=deepseek-v4-flash --mineguard.llm.max-calls=1000 --mineguard.llm.max-output-tokens=2048 --mineguard.llm.request-timeout-seconds=60 --mineguard.llm.thinking=disabled'
     }
     $database = 'jdbc:h2:file:' + ($ResolvedRun -replace '\\','/') + '/application;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE'
     $backendArgs = '-jar "' + $jar + '" --server.address=127.0.0.1 --server.port=8080 --spring.datasource.url="' + $database + '" --spring.datasource.driver-class-name=org.h2.Driver --spring.datasource.username=sa --spring.datasource.password= --mineguard.runtime.bootstrap-username= --mineguard.runtime.bootstrap-password= --mineguard.vector-store.type=in-memory --mineguard.demo-data-enabled=true --mineguard.runtime.scheduler-enabled=true --mineguard.industrial.type=http-contract --mineguard.industrial.base-url=http://127.0.0.1:18081 --mineguard.trace-path="' + (Join-Path $ResolvedRun 'traces') + '" ' + $modelArgs
