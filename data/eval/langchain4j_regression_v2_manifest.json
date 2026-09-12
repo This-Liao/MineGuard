@@ -1,0 +1,25 @@
+{
+  "suite": "langchain4j-adapter-regression-v2",
+  "frozenAt": "2026-09-13T02:13:00+08:00",
+  "developerVisible": true,
+  "purpose": "在已公开的 Agent 留出题上验证 LangChain4j AI Services 适配器一致性，不作为新增盲测",
+  "preflight": "不携带密钥的沙箱外 HTTPS 请求已到达 DeepSeek 并返回 401；v1 因受限环境 TLS 失败且没有 HTTP/Token 回执而判定无效",
+  "caseCount": 24,
+  "caseSha256": "c64f0a0f582908072fed2df8cbcbd38ec45e577413997dc9c052483c79ea1aa7",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "maxOutputTokens": 2048,
+  "thinking": "disabled",
+  "maxCalls": 48,
+  "runPolicy": "只运行一个正式批次；LangChain4j 内部重试为 0；每个用例最多允许一次业务修复请求；失败结果不得通过重跑筛选",
+  "sources": {
+    "data/eval/agent_holdout_v1.json": "c64f0a0f582908072fed2df8cbcbd38ec45e577413997dc9c052483c79ea1aa7",
+    "src/main/java/com/mineguard/eval/LangChain4jRegressionEvaluator.java": "302d9bde6dceb264e9d1af4d2187e35deda488b628a5296e14f0d2c0e8231b59",
+    "src/main/java/com/mineguard/eval/LangChain4jRegressionApplication.java": "8de5b5b2d7946aeae252be575dec3ae9f0b79f2aa30acc8a10df120b042338f2",
+    "src/main/java/com/mineguard/eval/LangChain4jRegressionGuard.java": "aac8b56abbceb10527f5b45addd0da4bfd6f7995ef85812dc18200826677a3e1",
+    "src/main/java/com/mineguard/llm/LangChain4jAgentModelClient.java": "17cc4058ca1c7e2dfd2a7ed7ea30326f1217196edc5a1067a70dea5f1b7a9bea",
+    "src/main/java/com/mineguard/agent/StructuredPlanner.java": "a894764242fba662a82502e365cd4d3294ba6576a36b3431621ffed57e68ad34",
+    "src/main/java/com/mineguard/agent/AgentPlanValidator.java": "ecb2704f18bfe04922bafee0d3da9b0c575db1a46034c8c3bfd5158075a12317",
+    "src/main/java/com/mineguard/agent/PlanningContract.java": "2ca3d6cd03a003dd5be9b57b00ade08484e46c748d697fe3f140ae829aa518b1"
+  }
+}

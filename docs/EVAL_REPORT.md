@@ -10,14 +10,16 @@
 | Planning v2 第一次 | Agent 29/30（96.67%），补充 12/12；74 次请求，125091 Token | [第一次 JSON](eval/deepseek-v2-run1-2026-08-31.json) |
 | Planning v2 第二次 | Agent 29/30（96.67%），补充 12/12；69 次请求，118104 Token | [第二次 JSON](eval/deepseek-v2-2026-08-31.json) |
 | Planning v2 新增留出集 | 21/24（87.50%）；31 次真实请求、54,070 Token；冻结后只跑一次 | [首轮报告](HOLDOUT_EVAL.md) · [原始 JSON](eval/holdout-v1/report.json) |
-| LangChain4j AI Services 冒烟验收 | `deepseek-v4-flash` 1/1；1 次请求、1,304 Token；类型化只读计划通过业务契约 | [原始 JSON](eval/langchain4j-smoke-2026-09-12.json) |
+| LangChain4j AI Services 专项回归 | Agent 21/24（87.50%）；30/30 HTTP 与类型化解析成功；65,027 Token；3 条失败保留 | [方法与边界](LANGCHAIN4J_EVAL.md) · [原始 JSON](eval/langchain4j-regression-v2/report.json) |
 | 独立语义检索对照 | 30 条新查询：哈希 / BGE 的 Recall@5 为 86.67% / 96.67%，MRR@5 为 0.7622 / 0.8778 | [方法与结果](SEMANTIC_RETRIEVAL.md) · [原始 JSON](eval/retrieval-v1/report.json) |
 | Milvus / BM25 / RRF 三路回归 | Recall@5 为 96.67% / 90.00% / 93.33%，MRR@5 为 0.8778 / 0.8111 / 0.8194 | [方法与边界](SEMANTIC_RETRIEVAL.md#milvus--bm25--rrf-三路回归) · [完整排名 JSON](eval/hybrid-retrieval-v2/report.json) |
 | v3 扩展三路评测 | 40 篇文档、80 条查询；向量 / BM25 / RRF Recall@5 为 91.25% / 97.08% / 96.25%；RRF 相比向量提高 5.00 个百分点 | [扩展结果](SEMANTIC_RETRIEVAL.md#v3-扩展混合检索评测) · [完整排名 JSON](eval/hybrid-retrieval-v3/report.json) |
 | v3 独立扰动鲁棒性 | 16 个意图 × 4 种表达；向量 / BM25 / RRF Recall@5 为 81.51% / 88.02% / 91.67%；RRF 平均最差变体 Recall@5 为 79.17% | [鲁棒性结果](SEMANTIC_RETRIEVAL.md#独立扰动鲁棒性评测) · [原始 JSON](eval/hybrid-retrieval-v3/report.json) |
-| 工程验收（2026-09-13） | 136 后端 + 3 外部集成 + 28 前端 + 4 向量契约测试通过；JaCoCo 指令覆盖率 74.70% | [当前工程验收](ENGINEERING_ACCEPTANCE.md) |
+| 工程验收（2026-09-13） | 140 后端 + 3 外部集成 + 28 前端 + 4 向量契约测试通过；JaCoCo 指令覆盖率 73.06% | [当前工程验收](ENGINEERING_ACCEPTANCE.md) |
 
 真实模型已经运行。历史 JSON 中的 `realModelEvaluation.status = NOT RUN` 只描述那一次离线运行，不代表项目当前状态。历史值不反向修改。
+
+LangChain4j 专项回归复用已公开的 24 条题，验证 AI Services 适配器和现有工作流的一致性，不合并为新的独立留出集。30/30 类型化解析不等于 24/24 业务成功；H14、H17、H20 的终态、意图或风险/工具失分见专项报告。
 
 严格成功同时检查终态、风险、完整工具集合与审批行为；A07 未通过项保留。两轮重复题和 12 条开发者可见补充题不合并为独立盲测。原始批次为 30 Agent + 20 Safety，新版每批另含 12 条补充，整批 Token 不能直接当作等量成本对比。详见 [规划器改进报告](PLANNING_IMPROVEMENT.md)。
 

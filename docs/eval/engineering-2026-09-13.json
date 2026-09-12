@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-09-13T01:41:00+08:00",
+  "recordedAt": "2026-09-13T02:27:00+08:00",
   "environment": {
     "os": "Windows",
     "javaRuntime": "22.0.2",
@@ -11,8 +11,8 @@
   },
   "verification": {
     "backend": {
-      "command": "mvn -q -Pexternal-it clean verify",
-      "tests": 136,
+      "command": "mvn -q clean verify",
+      "tests": 140,
       "failures": 0,
       "errors": 0,
       "skipped": 0
@@ -37,10 +37,10 @@
       "failures": 0
     },
     "jacocoInstruction": {
-      "covered": 17505,
-      "missed": 5928,
-      "total": 23433,
-      "coveredPercent": 74.70,
+      "covered": 18206,
+      "missed": 6713,
+      "total": 24919,
+      "coveredPercent": 73.06,
       "minimumPercent": 70,
       "gate": "PASSED"
     }

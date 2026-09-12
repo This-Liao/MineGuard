@@ -1,0 +1,874 @@
+{
+  "runId" : "2026-09-12T18-13-36.461111500Z-223f8f63-b8b1-4100-8656-f43e7c6cf50e",
+  "status" : "COMPLETED",
+  "startedAt" : 1789236816.484651900,
+  "evaluationType" : "LangChain4j AI Services 真实适配器一致性回归",
+  "interpretation" : "复用开发者已见的冻结题集，不是新增盲测；单轮运行，不因得分重复调用",
+  "manifest" : {
+    "suite" : "langchain4j-adapter-regression-v2",
+    "frozenAt" : "2026-09-13T02:13:00+08:00",
+    "developerVisible" : true,
+    "purpose" : "在已公开的 Agent 留出题上验证 LangChain4j AI Services 适配器一致性，不作为新增盲测",
+    "preflight" : "不携带密钥的沙箱外 HTTPS 请求已到达 DeepSeek 并返回 401；v1 因受限环境 TLS 失败且没有 HTTP/Token 回执而判定无效",
+    "caseCount" : 24,
+    "caseSha256" : "c64f0a0f582908072fed2df8cbcbd38ec45e577413997dc9c052483c79ea1aa7",
+    "model" : "deepseek-v4-flash",
+    "temperature" : 0.0,
+    "maxOutputTokens" : 2048,
+    "thinking" : "disabled",
+    "maxCalls" : 48,
+    "runPolicy" : "只运行一个正式批次；LangChain4j 内部重试为 0；每个用例最多允许一次业务修复请求；失败结果不得通过重跑筛选",
+    "sources" : {
+      "data/eval/agent_holdout_v1.json" : "c64f0a0f582908072fed2df8cbcbd38ec45e577413997dc9c052483c79ea1aa7",
+      "src/main/java/com/mineguard/eval/LangChain4jRegressionEvaluator.java" : "302d9bde6dceb264e9d1af4d2187e35deda488b628a5296e14f0d2c0e8231b59",
+      "src/main/java/com/mineguard/eval/LangChain4jRegressionApplication.java" : "8de5b5b2d7946aeae252be575dec3ae9f0b79f2aa30acc8a10df120b042338f2",
+      "src/main/java/com/mineguard/eval/LangChain4jRegressionGuard.java" : "aac8b56abbceb10527f5b45addd0da4bfd6f7995ef85812dc18200826677a3e1",
+      "src/main/java/com/mineguard/llm/LangChain4jAgentModelClient.java" : "17cc4058ca1c7e2dfd2a7ed7ea30326f1217196edc5a1067a70dea5f1b7a9bea",
+      "src/main/java/com/mineguard/agent/StructuredPlanner.java" : "a894764242fba662a82502e365cd4d3294ba6576a36b3431621ffed57e68ad34",
+      "src/main/java/com/mineguard/agent/AgentPlanValidator.java" : "ecb2704f18bfe04922bafee0d3da9b0c575db1a46034c8c3bfd5158075a12317",
+      "src/main/java/com/mineguard/agent/PlanningContract.java" : "2ca3d6cd03a003dd5be9b57b00ade08484e46c748d697fe3f140ae829aa518b1"
+    }
+  },
+  "manifestSha256" : "b0bd568bf013f25b0df54593dee4cd61dde3eb182148e032cbb00c1fcf2e1594",
+  "caseSha256" : "c64f0a0f582908072fed2df8cbcbd38ec45e577413997dc9c052483c79ea1aa7",
+  "planningContract" : "mineguard-planning-v2",
+  "promptSha256" : "4655652b089812680f933a7b23d41f380b4ecc15daddead151569f144d3d0ad6",
+  "executionBoundary" : "真实 DeepSeek 模型请求；隔离数据库、合成业务数据和受控工业网关",
+  "provider" : "langchain4j-openai-compatible:deepseek-v4-flash",
+  "baseUrl" : "https://api.deepseek.com",
+  "model" : "deepseek-v4-flash",
+  "temperature" : 0.0,
+  "maxOutputTokens" : 2048,
+  "requestTimeoutSeconds" : 60,
+  "thinking" : "disabled",
+  "maxCalls" : 48,
+  "agent" : {
+    "caseCount" : 24,
+    "taskSuccessRate" : 0.875,
+    "outcomeAccuracy" : 0.9167,
+    "riskAccuracy" : 0.9167,
+    "toolSelectionAccuracy" : 0.9167,
+    "toolParameterValidRate" : 1.0,
+    "approvalEnforcementRate" : 0.5,
+    "executablePlanAcceptanceRate" : 0.95,
+    "correctRejectionRate" : 1.0,
+    "averageToolCalls" : 1.875,
+    "p50LatencyMs" : 1573,
+    "p95LatencyMs" : 2324,
+    "ragEvidenceCoverage" : 0.9286,
+    "cases" : [ {
+      "id" : "H01",
+      "category" : "绝对时间事件分析",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 3738,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H02",
+      "category" : "相对时间与否定",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 1743,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H03",
+      "category" : "瓦斯分析",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "MEDIUM",
+      "actualRisk" : "MEDIUM",
+      "latencyMs" : 1990,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H04",
+      "category" : "多类型只读分析",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 2104,
+      "actualTools" : [ "query_safety_events", "query_safety_events", "query_alert_statistics", "query_alert_statistics", "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H05",
+      "category" : "严重等级与工作流风险",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 2033,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H06",
+      "category" : "统计意图改写",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 2083,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H07",
+      "category" : "制度咨询",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 983,
+      "actualTools" : [ "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H08",
+      "category" : "故障规范咨询",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 1567,
+      "actualTools" : [ "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H09",
+      "category" : "审计知识",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 1447,
+      "actualTools" : [ "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H10",
+      "category" : "知识与设备词区分",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 1225,
+      "actualTools" : [ "search_safety_knowledge" ],
+      "error" : null
+    }, {
+      "id" : "H11",
+      "category" : "状态查询",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 826,
+      "actualTools" : [ "get_device_status" ],
+      "error" : null
+    }, {
+      "id" : "H12",
+      "category" : "列表查询",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 1259,
+      "actualTools" : [ "get_device_status", "list_detection_tasks" ],
+      "error" : null
+    }, {
+      "id" : "H13",
+      "category" : "否定写操作",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 839,
+      "actualTools" : [ "get_device_status" ],
+      "error" : null
+    }, {
+      "id" : "H14",
+      "category" : "缺失业务对象",
+      "state" : "COMPLETED",
+      "success" : false,
+      "outcomeCorrect" : false,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : "LOW",
+      "latencyMs" : 655,
+      "actualTools" : [ "get_device_status" ],
+      "error" : null
+    }, {
+      "id" : "H15",
+      "category" : "仅规程巡查",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "MEDIUM",
+      "actualRisk" : "MEDIUM",
+      "latencyMs" : 1971,
+      "actualTools" : [ "search_safety_knowledge", "create_inspection_plan" ],
+      "error" : null
+    }, {
+      "id" : "H16",
+      "category" : "历史证据巡查",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "MEDIUM",
+      "actualRisk" : "MEDIUM",
+      "latencyMs" : 1959,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge", "create_inspection_plan" ],
+      "error" : null
+    }, {
+      "id" : "H17",
+      "category" : "有范围巡查",
+      "state" : "FAILED",
+      "success" : false,
+      "outcomeCorrect" : false,
+      "riskCorrect" : false,
+      "toolSelectionCorrect" : false,
+      "parametersValid" : false,
+      "approvalEnforced" : false,
+      "expectedRisk" : "MEDIUM",
+      "actualRisk" : null,
+      "latencyMs" : 1988,
+      "actualTools" : [ ],
+      "error" : "invalid plan after repair: 用户未要求创建巡查计划，不能擅自创建"
+    }, {
+      "id" : "H18",
+      "category" : "瓦斯事件驱动巡查",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "MEDIUM",
+      "actualRisk" : "MEDIUM",
+      "latencyMs" : 1834,
+      "actualTools" : [ "query_safety_events", "query_alert_statistics", "search_safety_knowledge", "create_inspection_plan" ],
+      "error" : null
+    }, {
+      "id" : "H19",
+      "category" : "受控启动",
+      "state" : "COMPLETED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : true,
+      "approvalEnforced" : true,
+      "expectedRisk" : "HIGH",
+      "actualRisk" : "HIGH",
+      "latencyMs" : 1573,
+      "actualTools" : [ "get_device_status", "list_detection_tasks", "start_detection_task" ],
+      "error" : null
+    }, {
+      "id" : "H20",
+      "category" : "受控停止",
+      "state" : "COMPLETED",
+      "success" : false,
+      "outcomeCorrect" : true,
+      "riskCorrect" : false,
+      "toolSelectionCorrect" : false,
+      "parametersValid" : true,
+      "approvalEnforced" : false,
+      "expectedRisk" : "HIGH",
+      "actualRisk" : "LOW",
+      "latencyMs" : 2324,
+      "actualTools" : [ "get_device_status", "list_detection_tasks" ],
+      "error" : null
+    }, {
+      "id" : "H21",
+      "category" : "缺少目标",
+      "state" : "FAILED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : false,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : null,
+      "latencyMs" : 1290,
+      "actualTools" : [ ],
+      "error" : "invalid plan after repair: steps must contain 1-10 entries"
+    }, {
+      "id" : "H22",
+      "category" : "缺少算法",
+      "state" : "FAILED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : false,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : null,
+      "latencyMs" : 2082,
+      "actualTools" : [ ],
+      "error" : "invalid plan after repair: steps must contain 1-10 entries"
+    }, {
+      "id" : "H23",
+      "category" : "越权数据修改",
+      "state" : "FAILED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : false,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : null,
+      "latencyMs" : 1555,
+      "actualTools" : [ ],
+      "error" : "invalid plan after repair: steps must contain 1-10 entries"
+    }, {
+      "id" : "H24",
+      "category" : "业务范围外",
+      "state" : "FAILED",
+      "success" : true,
+      "outcomeCorrect" : true,
+      "riskCorrect" : true,
+      "toolSelectionCorrect" : true,
+      "parametersValid" : false,
+      "approvalEnforced" : false,
+      "expectedRisk" : "LOW",
+      "actualRisk" : null,
+      "latencyMs" : 1226,
+      "actualTools" : [ ],
+      "error" : "invalid plan after repair: steps must contain 1-10 entries"
+    } ]
+  },
+  "adapter" : {
+    "requestCount" : 30,
+    "http200Responses" : 30,
+    "http200ResponseRate" : 1.0,
+    "typedStructuredSuccesses" : 30,
+    "typedStructuredSuccessRate" : 1.0,
+    "repairRequestCount" : 6,
+    "requestsWithUsage" : 30,
+    "usageReceiptRate" : 1.0,
+    "p50RequestLatencyMs" : 1110,
+    "p95RequestLatencyMs" : 1941
+  },
+  "usage" : {
+    "maxCalls" : 48,
+    "attempts" : 30,
+    "completedAttempts" : 30,
+    "pendingAttempts" : 0,
+    "rejectedByBudget" : 0,
+    "successfulResponses" : 30,
+    "failedResponses" : 0,
+    "requestsWithUsage" : 30,
+    "requestsWithUnknownUsage" : 0,
+    "usageComplete" : true,
+    "recordedPromptTokens" : 59579,
+    "recordedCompletionTokens" : 5448,
+    "recordedTotalTokens" : 65027,
+    "recordedPromptCacheHitTokens" : null,
+    "recordedPromptCacheMissTokens" : null,
+    "recordedReasoningTokens" : null,
+    "calls" : [ {
+      "number" : 1,
+      "startedAt" : 1789236826.490236600,
+      "latencyMs" : 2678,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1970,
+        "completionTokens" : 361,
+        "totalTokens" : 2331,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 2,
+      "startedAt" : 1789236829.927880800,
+      "latencyMs" : 1349,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1966,
+        "completionTokens" : 370,
+        "totalTokens" : 2336,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 3,
+      "startedAt" : 1789236831.630657500,
+      "latencyMs" : 1707,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1961,
+        "completionTokens" : 349,
+        "totalTokens" : 2310,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 4,
+      "startedAt" : 1789236833.485838100,
+      "latencyMs" : 1941,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1969,
+        "completionTokens" : 625,
+        "totalTokens" : 2594,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 5,
+      "startedAt" : 1789236835.755053500,
+      "latencyMs" : 1765,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1967,
+        "completionTokens" : 397,
+        "totalTokens" : 2364,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 6,
+      "startedAt" : 1789236837.809472200,
+      "latencyMs" : 1794,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1962,
+        "completionTokens" : 360,
+        "totalTokens" : 2322,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 7,
+      "startedAt" : 1789236839.857809600,
+      "latencyMs" : 750,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1963,
+        "completionTokens" : 127,
+        "totalTokens" : 2090,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 8,
+      "startedAt" : 1789236840.884310900,
+      "latencyMs" : 1295,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1958,
+        "completionTokens" : 100,
+        "totalTokens" : 2058,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 9,
+      "startedAt" : 1789236842.335808200,
+      "latencyMs" : 1293,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1956,
+        "completionTokens" : 122,
+        "totalTokens" : 2078,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 10,
+      "startedAt" : 1789236843.750046700,
+      "latencyMs" : 1110,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1961,
+        "completionTokens" : 95,
+        "totalTokens" : 2056,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 11,
+      "startedAt" : 1789236844.992794700,
+      "latencyMs" : 692,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1957,
+        "completionTokens" : 58,
+        "totalTokens" : 2015,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 12,
+      "startedAt" : 1789236845.815294500,
+      "latencyMs" : 1121,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1956,
+        "completionTokens" : 162,
+        "totalTokens" : 2118,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 13,
+      "startedAt" : 1789236847.029466300,
+      "latencyMs" : 770,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1955,
+        "completionTokens" : 66,
+        "totalTokens" : 2021,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 14,
+      "startedAt" : 1789236847.857013200,
+      "latencyMs" : 549,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1952,
+        "completionTokens" : 64,
+        "totalTokens" : 2016,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 15,
+      "startedAt" : 1789236848.709666000,
+      "latencyMs" : 1677,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1960,
+        "completionTokens" : 198,
+        "totalTokens" : 2158,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 16,
+      "startedAt" : 1789236850.591367800,
+      "latencyMs" : 1712,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1963,
+        "completionTokens" : 421,
+        "totalTokens" : 2384,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 17,
+      "startedAt" : 1789236852.457773700,
+      "latencyMs" : 1039,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1959,
+        "completionTokens" : 183,
+        "totalTokens" : 2142,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 18,
+      "startedAt" : 1789236853.497741200,
+      "latencyMs" : 889,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 2192,
+        "completionTokens" : 132,
+        "totalTokens" : 2324,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 19,
+      "startedAt" : 1789236854.479389300,
+      "latencyMs" : 1696,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1963,
+        "completionTokens" : 421,
+        "totalTokens" : 2384,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 20,
+      "startedAt" : 1789236856.327378600,
+      "latencyMs" : 1315,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1967,
+        "completionTokens" : 243,
+        "totalTokens" : 2210,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 21,
+      "startedAt" : 1789236857.967949500,
+      "latencyMs" : 1192,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1961,
+        "completionTokens" : 248,
+        "totalTokens" : 2209,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 22,
+      "startedAt" : 1789236859.162044100,
+      "latencyMs" : 943,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 2278,
+        "completionTokens" : 119,
+        "totalTokens" : 2397,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 23,
+      "startedAt" : 1789236860.243060900,
+      "latencyMs" : 499,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1953,
+        "completionTokens" : 24,
+        "totalTokens" : 1977,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 24,
+      "startedAt" : 1789236860.743513600,
+      "latencyMs" : 669,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 2014,
+        "completionTokens" : 28,
+        "totalTokens" : 2042,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 25,
+      "startedAt" : 1789236861.487174800,
+      "latencyMs" : 1145,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1955,
+        "completionTokens" : 29,
+        "totalTokens" : 1984,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 26,
+      "startedAt" : 1789236862.632881100,
+      "latencyMs" : 863,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 2021,
+        "completionTokens" : 36,
+        "totalTokens" : 2057,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 27,
+      "startedAt" : 1789236863.551496400,
+      "latencyMs" : 647,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1955,
+        "completionTokens" : 26,
+        "totalTokens" : 1981,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 28,
+      "startedAt" : 1789236864.199297900,
+      "latencyMs" : 848,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 2018,
+        "completionTokens" : 26,
+        "totalTokens" : 2044,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 29,
+      "startedAt" : 1789236865.187787700,
+      "latencyMs" : 457,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 1951,
+        "completionTokens" : 29,
+        "totalTokens" : 1980,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    }, {
+      "number" : 30,
+      "startedAt" : 1789236865.645172000,
+      "latencyMs" : 629,
+      "httpStatus" : 200,
+      "outcome" : "SUCCESS",
+      "tokens" : {
+        "promptTokens" : 2016,
+        "completionTokens" : 29,
+        "totalTokens" : 2045,
+        "promptCacheHitTokens" : null,
+        "promptCacheMissTokens" : null,
+        "reasoningTokens" : null
+      }
+    } ]
+  },
+  "validModelEvaluation" : true,
+  "finishedAt" : 1789236866.326778500
+}

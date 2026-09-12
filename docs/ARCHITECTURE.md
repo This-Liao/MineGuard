@@ -117,7 +117,7 @@ flowchart LR
 
 规划模型侧新增 `langchain4j-openai-compatible` provider：LangChain4j AI Services 直接返回 `GeneratedPlan` / `GeneratedStep` 类型，固定参数对象再转换为现有 `AgentPlan`。原 `StructuredPlanner`、`PlanningContract`、工具注册、审批和执行引擎继续作为后端权威；AI Services 不直接执行工具。旧 `openai-compatible` 与确定性 provider 仍保留，便于历史报告复现。
 
-确定性快照、DeepSeek 实测、HTTP 模型桩测试分开保存。真实评测固定使用隔离 H2、合成数据和 Mock 工业网关，禁止让自动审批评测控制真实设备。原有关键词基线不执行工具，不能用于端到端模型优劣结论。
+确定性快照、DeepSeek 实测、HTTP 模型桩测试分开保存。LangChain4j 专项回归进一步把 HTTP 200、AI Services 类型化解析、业务严格成功、风险、审批、修复请求、Token 和请求/任务延迟分层计分。真实评测固定使用隔离 H2、合成数据和 Mock 工业网关，禁止让自动审批评测控制真实设备。原有关键词基线不执行工具，不能用于端到端模型优劣结论。
 
 Planning v2 的 24 条新题采用冻结源摘要与单次运行标记，首轮结果为 21/24；与旧固定 29/30 分开报告。混合检索 v2 复用已有 30 条固定查询做版本回归；v3 将评测语料扩到 40 篇，主对照扩到 80 条，并另建 16 个意图、每组四种表达的扰动套件。两套 v3 查询分别计分，统一归档向量、BM25 与 RRF 排名、配对挽救/损伤和组内最差召回。见 [留出协议](HOLDOUT_PROTOCOL.md)、[首轮结果](HOLDOUT_EVAL.md) 和 [当前评测总览](EVAL_REPORT.md)。普通 CI 仅执行离线测试；外部集成通过手动或 nightly 工作流独立运行。
 
