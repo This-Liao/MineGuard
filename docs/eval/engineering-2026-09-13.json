@@ -1,0 +1,72 @@
+{
+  "recordedAt": "2026-09-13T01:41:00+08:00",
+  "environment": {
+    "os": "Windows",
+    "javaRuntime": "22.0.2",
+    "javaCompileTarget": 21,
+    "maven": "3.9.9",
+    "milvus": "2.5.10",
+    "postgresql": "16.15",
+    "node": "local installed runtime"
+  },
+  "verification": {
+    "backend": {
+      "command": "mvn -q -Pexternal-it clean verify",
+      "tests": 136,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "externalIntegration": {
+      "command": "MINEGUARD_RUN_EXTERNAL_IT=true; mvn -q -Pexternal-it verify",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "scope": ["PostgreSQL", "Milvus", "multi-process recovery and SSE replay"]
+    },
+    "frontend": {
+      "commands": ["npm test", "npm run build"],
+      "tests": 28,
+      "failures": 0,
+      "productionBuild": "PASSED"
+    },
+    "embeddingHttpContract": {
+      "command": "python -m unittest discover -s scripts/embedding -p test_*.py -v",
+      "tests": 4,
+      "failures": 0
+    },
+    "jacocoInstruction": {
+      "covered": 17505,
+      "missed": 5928,
+      "total": 23433,
+      "coveredPercent": 74.70,
+      "minimumPercent": 70,
+      "gate": "PASSED"
+    }
+  },
+  "hybridRetrievalV3": {
+    "documents": 40,
+    "expandedCases": 80,
+    "robustnessCases": 64,
+    "robustnessIntentGroups": 16,
+    "embeddingRequests": 146,
+    "isolatedMilvusCollectionDropped": true,
+    "expandedRecallAt5": {
+      "vector": 0.9125,
+      "bm25": 0.970833333333333,
+      "rrf": 0.9625
+    },
+    "robustnessRecallAt5": {
+      "vector": 0.815104166666667,
+      "bm25": 0.880208333333333,
+      "rrf": 0.916666666666667
+    },
+    "meanWorstVariantRecallAt5": {
+      "vector": 0.625,
+      "bm25": 0.708333333333333,
+      "rrf": 0.791666666666667
+    },
+    "report": "docs/eval/hybrid-retrieval-v3/report.json"
+  }
+}

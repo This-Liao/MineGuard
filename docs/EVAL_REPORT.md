@@ -1,6 +1,6 @@
 # MineGuard 当前评测总览
 
-更新日期：2026-09-12。本文件是当前证据入口，不再由离线评测覆盖。
+更新日期：2026-09-13。本文件是当前证据入口，不再由离线评测覆盖。
 
 ## 真实模型与工程验收
 
@@ -13,13 +13,17 @@
 | LangChain4j AI Services 冒烟验收 | `deepseek-v4-flash` 1/1；1 次请求、1,304 Token；类型化只读计划通过业务契约 | [原始 JSON](eval/langchain4j-smoke-2026-09-12.json) |
 | 独立语义检索对照 | 30 条新查询：哈希 / BGE 的 Recall@5 为 86.67% / 96.67%，MRR@5 为 0.7622 / 0.8778 | [方法与结果](SEMANTIC_RETRIEVAL.md) · [原始 JSON](eval/retrieval-v1/report.json) |
 | Milvus / BM25 / RRF 三路回归 | Recall@5 为 96.67% / 90.00% / 93.33%，MRR@5 为 0.8778 / 0.8111 / 0.8194 | [方法与边界](SEMANTIC_RETRIEVAL.md#milvus--bm25--rrf-三路回归) · [完整排名 JSON](eval/hybrid-retrieval-v2/report.json) |
-| 工程验收（2026-09-12） | 132 后端 + 3 外部集成 + 28 前端 + 4 向量契约测试通过；JaCoCo 指令覆盖率 78.41% | [当前工程验收](ENGINEERING_ACCEPTANCE.md) · [快照 JSON](eval/engineering-2026-09-12.json) |
+| v3 扩展三路评测 | 40 篇文档、80 条查询；向量 / BM25 / RRF Recall@5 为 91.25% / 97.08% / 96.25%；RRF 相比向量提高 5.00 个百分点 | [扩展结果](SEMANTIC_RETRIEVAL.md#v3-扩展混合检索评测) · [完整排名 JSON](eval/hybrid-retrieval-v3/report.json) |
+| v3 独立扰动鲁棒性 | 16 个意图 × 4 种表达；向量 / BM25 / RRF Recall@5 为 81.51% / 88.02% / 91.67%；RRF 平均最差变体 Recall@5 为 79.17% | [鲁棒性结果](SEMANTIC_RETRIEVAL.md#独立扰动鲁棒性评测) · [原始 JSON](eval/hybrid-retrieval-v3/report.json) |
+| 工程验收（2026-09-13） | 136 后端 + 3 外部集成 + 28 前端 + 4 向量契约测试通过；JaCoCo 指令覆盖率 74.70% | [当前工程验收](ENGINEERING_ACCEPTANCE.md) |
 
 真实模型已经运行。历史 JSON 中的 `realModelEvaluation.status = NOT RUN` 只描述那一次离线运行，不代表项目当前状态。历史值不反向修改。
 
 严格成功同时检查终态、风险、完整工具集合与审批行为；A07 未通过项保留。两轮重复题和 12 条开发者可见补充题不合并为独立盲测。原始批次为 30 Agent + 20 Safety，新版每批另含 12 条补充，整批 Token 不能直接当作等量成本对比。详见 [规划器改进报告](PLANNING_IMPROVEMENT.md)。
 
 混合检索 v2 复用已公开的 30 条语义查询，是版本回归，不是新增留出集。等权 RRF 没有超过向量单路，报告保留该结果；BM25 对中文术语、设备编号和算法 ID 的精确召回由独立契约测试验证。
+
+v3 在冻结后的 80 条扩展集上证明 RRF 能补偿向量漏检，但 BM25 仍有更高的总体 Recall@5；在完全分离的 64 条扰动查询上，RRF 的 Recall@5、MRR@5、nDCG@5、整组稳定命中率和平均最差变体召回均为三路最高。64 条来自 16 个意图的四种表达，不能表述为 64 个相互独立的检索意图。
 
 ## 报告更新规则
 

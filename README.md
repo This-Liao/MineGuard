@@ -19,8 +19,8 @@
 
 [![GitHub Actions CI][badge-ci]](https://github.com/This-Liao/MineGuard/actions/workflows/ci.yml)
 [![外部集成 CI][badge-external-ci]](https://github.com/This-Liao/MineGuard/actions/workflows/external-integration.yml)
-[![后端回归：132 项通过][badge-tests]](docs/ENGINEERING_ACCEPTANCE.md)
-[![指令覆盖率：78.41%][badge-coverage]](docs/ENGINEERING_ACCEPTANCE.md)
+[![后端回归：136 项通过][badge-tests]](docs/ENGINEERING_ACCEPTANCE.md)
+[![指令覆盖率：74.70%][badge-coverage]](docs/ENGINEERING_ACCEPTANCE.md)
 [![GitHub Stars][badge-stars]](https://github.com/This-Liao/MineGuard/stargazers)
 
 [操作演示](#实际操作演示) · [快速开始](#快速开始) · [核心能力](#核心能力) · [评测结果](#评测与质量) · [文档导航](#文档导航) · [反馈问题](https://github.com/This-Liao/MineGuard/issues)
@@ -212,7 +212,8 @@ cd ..
 | --- | --- | --- |
 | Planning v2 冻结后新增 24 题 | 单轮 **21/24 · 87.50%**；31 次真实 DeepSeek 请求，54,070 Token | [留出报告](docs/HOLDOUT_EVAL.md) |
 | 同一批 30 条新检索查询 | 哈希 → BGE：Recall@5 **86.67% → 96.67%**；MRR@5 **0.7622 → 0.8778** | [语义检索对照](docs/SEMANTIC_RETRIEVAL.md) |
-| BGE + Milvus / BM25 / RRF 三路回归 | Recall@5 **96.67% / 90.00% / 93.33%**；保留每题三路排名 | [混合检索报告](docs/SEMANTIC_RETRIEVAL.md#milvus--bm25--rrf-三路回归) |
+| 40 篇文档、80 条扩展三路评测 | 向量 / BM25 / RRF Recall@5：**91.25% / 97.08% / 96.25%**；RRF 比向量高 **5.00 个百分点** | [扩展混合检索](docs/SEMANTIC_RETRIEVAL.md#v3-扩展混合检索评测) |
+| 16 组、64 条独立扰动评测 | 向量 / BM25 / RRF Recall@5：**81.51% / 88.02% / 91.67%**；RRF 整组稳定命中 **100%** | [RRF 鲁棒性](docs/SEMANTIC_RETRIEVAL.md#独立扰动鲁棒性评测) |
 | LangChain4j AI Services 真实调用 | `deepseek-v4-flash` 1/1 成功；1,304 Token，结构化计划通过只读契约 | [原始调用报告](docs/eval/langchain4j-smoke-2026-09-12.json) |
 
 两类实验均在运行前冻结用例与配置，保留全部失败；由开发者预先标注，不称第三方盲测。固定回归、Agent 留出和检索 Recall 使用不同分母，分别解释。
@@ -221,11 +222,11 @@ cd ..
 
 | 验收项 | 记录结果 | 核验来源 |
 | :--- | :--- | :--- |
-| 后端测试 | **132 项通过** | Surefire |
+| 后端测试 | **136 项通过** | Surefire |
 | 外部服务 / 多进程恢复 | **3 项通过** | PostgreSQL、Milvus、进程接管与 SSE |
 | 前端交互测试 | **28 项通过** | Vitest + Vue Test Utils |
 | 向量侧车 HTTP 契约 | **4 项通过** | Python unittest；不冒充模型推理 |
-| JaCoCo 指令覆盖率 | **78.41%**，构建门禁 ≥ 70% | 16669 / 21260 条指令 |
+| JaCoCo 指令覆盖率 | **74.70%**，构建门禁 ≥ 70% | 17505 / 23433 条指令 |
 | 前端构建 | 类型检查与生产构建通过 | `vue-tsc` + Vite |
 
 顶部 **CI 徽章**展示 GitHub Actions 的真实运行状态；“后端回归”和覆盖率徽章保留上述日期的验收快照。每次 push / PR 执行 Java 测试与覆盖率门禁、前端测试和构建；外部 PostgreSQL / Milvus 验收单独支持手动与每日定时运行。详见 [CI 说明](docs/CI.md)、[当前评测总览](docs/EVAL_REPORT.md) 与 [简历指标](docs/RESUME_METRICS.md)。
@@ -264,8 +265,8 @@ mvn clean verify
 .\scripts\run-real-eval.ps1 -MaxCalls 100 -AgentCases 30 -SafetyCases 20
 # LangChain4j AI Services 单次只读真实调用验收
 .\scripts\run-langchain4j-smoke.ps1 -MaxCalls 2
-# 启动隔离 Milvus 与本地 BGE，比较向量、BM25 和 RRF
-.\scripts\run-hybrid-retrieval-eval.ps1
+# 启动隔离 Milvus 与本地 BGE，运行 80 条扩展对照与 64 条独立扰动评测
+.\scripts\run-hybrid-retrieval-v3-eval.ps1
 # 完整新版对照，附加 12 条用例单独计分
 .\scripts\run-real-eval.ps1 -MaxCalls 124 -AgentCases 30 -SafetyCases 20 -SupplementalCases 12
 # 前端离线交互回归
@@ -378,6 +379,6 @@ MineGuard/
 [badge-deepseek]: https://img.shields.io/badge/DeepSeek-OpenAI_compatible-536AF5?style=flat-square
 [badge-langchain4j]: https://img.shields.io/badge/LangChain4j-1.20.0-5B4BDB?style=flat-square
 [badge-lucene]: https://img.shields.io/badge/Lucene-BM25-F58A07?style=flat-square&logo=apachelucene&logoColor=white
-[badge-tests]: https://img.shields.io/badge/%E5%90%8E%E7%AB%AF%E5%9B%9E%E5%BD%92-132_%E9%A1%B9%E9%80%9A%E8%BF%87-21816B?style=flat-square
-[badge-coverage]: https://img.shields.io/badge/%E6%8C%87%E4%BB%A4%E8%A6%86%E7%9B%96%E7%8E%87-78.41%25-21816B?style=flat-square
+[badge-tests]: https://img.shields.io/badge/%E5%90%8E%E7%AB%AF%E5%9B%9E%E5%BD%92-136_%E9%A1%B9%E9%80%9A%E8%BF%87-21816B?style=flat-square
+[badge-coverage]: https://img.shields.io/badge/%E6%8C%87%E4%BB%A4%E8%A6%86%E7%9B%96%E7%8E%87-74.70%25-21816B?style=flat-square
 [badge-stars]: https://img.shields.io/github/stars/This-Liao/MineGuard?style=flat-square&logo=github&label=Stars&color=5865F2

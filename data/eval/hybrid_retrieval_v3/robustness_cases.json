@@ -1,0 +1,81 @@
+[
+  {"id":"G01-B","groupId":"G01","category":"IDENTIFIER_MIXED","variantType":"BASE","query":"查询 CAMERA-19 的接入位置，并说明设备离线后的完整恢复检查。","expectedDocumentIds":["K021-camera-19-asset","K019-camera-offline"]},
+  {"id":"G01-P","groupId":"G01","category":"IDENTIFIER_MIXED","variantType":"PARAPHRASE","query":"十九号摄像点断联了，资产链路在哪里，恢复后还应验证什么？","expectedDocumentIds":["K021-camera-19-asset","K019-camera-offline"]},
+  {"id":"G01-T","groupId":"G01","category":"IDENTIFIER_MIXED","variantType":"TERM_VARIATION","query":"camera 19 / cam-3-019：端口定位 + offline 排障","expectedDocumentIds":["K021-camera-19-asset","K019-camera-offline"]},
+  {"id":"G01-N","groupId":"G01","category":"IDENTIFIER_MIXED","variantType":"DISTRACTOR_NOISE","query":"日报还提到了人员巡查；本题只处理 CAMERA-19，请找资产端口与离线恢复依据。","expectedDocumentIds":["K021-camera-19-asset","K019-camera-offline"]},
+
+  {"id":"G02-B","groupId":"G02","category":"IDENTIFIER_MIXED","variantType":"BASE","query":"启动 intrusion_detection_v3 前需要哪些算法配置、人工审批和执行后验证？","expectedDocumentIds":["K023-intrusion-algorithm","K004-detection-task","K017-tool-safety"]},
+  {"id":"G02-P","groupId":"G02","category":"IDENTIFIER_MIXED","variantType":"PARAPHRASE","query":"三代越界识别任务准备上线，如何核对参数并保证没有绕过授权？","expectedDocumentIds":["K023-intrusion-algorithm","K004-detection-task","K017-tool-safety"]},
+  {"id":"G02-T","groupId":"G02","category":"IDENTIFIER_MIXED","variantType":"TERM_VARIATION","query":"ALG INTR 03 启用：polygon、approval token、RUNNING verification","expectedDocumentIds":["K023-intrusion-algorithm","K004-detection-task","K017-tool-safety"]},
+  {"id":"G02-N","groupId":"G02","category":"IDENTIFIER_MIXED","variantType":"DISTRACTOR_NOISE","query":"页面上同时有历史 LOW_LIGHT 提示，但当前只问 intrusion_detection_v3 的参数、审批与启用验证。","expectedDocumentIds":["K023-intrusion-algorithm","K004-detection-task","K017-tool-safety"]},
+
+  {"id":"G03-B","groupId":"G03","category":"IDENTIFIER_MIXED","variantType":"BASE","query":"GT-204 浓度异常时怎样结合测点定位、瓦斯处置和标校记录进行复核？","expectedDocumentIds":["K025-gas-gt204","K002-gas-warning","K016-sensor-calibration"]},
+  {"id":"G03-P","groupId":"G03","category":"IDENTIFIER_MIXED","variantType":"PARAPHRASE","query":"三区回风侧甲烷探头读数升高，先找它的接入信息，再查应急动作和校准依据。","expectedDocumentIds":["K025-gas-gt204","K002-gas-warning","K016-sensor-calibration"]},
+  {"id":"G03-T","groupId":"G03","category":"IDENTIFIER_MIXED","variantType":"TERM_VARIATION","query":"gt 204 / CH4 3A 数值飙升，PLC 定位、告警响应、calibration","expectedDocumentIds":["K025-gas-gt204","K002-gas-warning","K016-sensor-calibration"]},
+  {"id":"G03-N","groupId":"G03","category":"IDENTIFIER_MIXED","variantType":"DISTRACTOR_NOISE","query":"交班页面还有一条摄像头提示；请忽略它，只分析 GT-204 的资产、气体告警和标校核查。","expectedDocumentIds":["K025-gas-gt204","K002-gas-warning","K016-sensor-calibration"]},
+
+  {"id":"G04-B","groupId":"G04","category":"IDENTIFIER_MIXED","variantType":"BASE","query":"BC-12 检修前后，资产信息、能源隔离和恢复确认分别怎么查？","expectedDocumentIds":["K028-belt-bc12","K007-electromechanical"]},
+  {"id":"G04-P","groupId":"G04","category":"IDENTIFIER_MIXED","variantType":"PARAPHRASE","query":"十二号输送带准备维修，怎样确认驱动设备并防止别人误送电？","expectedDocumentIds":["K028-belt-bc12","K007-electromechanical"]},
+  {"id":"G04-T","groupId":"G04","category":"IDENTIFIER_MIXED","variantType":"TERM_VARIATION","query":"bc 12 / MOTOR BC12 maintenance：断能、lockout、复机验证","expectedDocumentIds":["K028-belt-bc12","K007-electromechanical"]},
+  {"id":"G04-N","groupId":"G04","category":"IDENTIFIER_MIXED","variantType":"DISTRACTOR_NOISE","query":"报告中附带了照明统计，但目标是 BC-12：请返回设备卡和安全检修闭环。","expectedDocumentIds":["K028-belt-bc12","K007-electromechanical"]},
+
+  {"id":"G05-B","groupId":"G05","category":"IDENTIFIER_MIXED","variantType":"BASE","query":"如何利用 EVT-0384 与 TRACE-0384 关联证据链并完成事件复盘？","expectedDocumentIds":["K036-event-0384","K018-evidence-trace","K020-incident-review"]},
+  {"id":"G05-P","groupId":"G05","category":"IDENTIFIER_MIXED","variantType":"PARAPHRASE","query":"0384 这起越界事件处理完了，怎样从原始点位一路回查审批、回执和改进项？","expectedDocumentIds":["K036-event-0384","K018-evidence-trace","K020-incident-review"]},
+  {"id":"G05-T","groupId":"G05","category":"IDENTIFIER_MIXED","variantType":"TERM_VARIATION","query":"evt 0384 -> trace 0384：source、tool receipt、approval、review","expectedDocumentIds":["K036-event-0384","K018-evidence-trace","K020-incident-review"]},
+  {"id":"G05-N","groupId":"G05","category":"IDENTIFIER_MIXED","variantType":"DISTRACTOR_NOISE","query":"列表还显示其他二十条告警；当前仅需 EVT-0384 的索引、审计证据和闭环复盘依据。","expectedDocumentIds":["K036-event-0384","K018-evidence-trace","K020-incident-review"]},
+
+  {"id":"G06-B","groupId":"G06","category":"IDENTIFIER_MIXED","variantType":"BASE","query":"PROFILE-NIGHT-03 下仍发生低照度，怎样核对配置并重新验证算法画质？","expectedDocumentIds":["K038-night-profile","K010-low-light"]},
+  {"id":"G06-P","groupId":"G06","category":"IDENTIFIER_MIXED","variantType":"PARAPHRASE","query":"三号夜间参数已经启用，画面还是暗，应该从曝光补光到识别效果做哪些检查？","expectedDocumentIds":["K038-night-profile","K010-low-light"]},
+  {"id":"G06-T","groupId":"G06","category":"IDENTIFIER_MIXED","variantType":"TERM_VARIATION","query":"profile night 03 + CAMERA 33：LOW LIGHT、曝光、增益、复测","expectedDocumentIds":["K038-night-profile","K010-low-light"]},
+  {"id":"G06-N","groupId":"G06","category":"IDENTIFIER_MIXED","variantType":"DISTRACTOR_NOISE","query":"同页还有气体趋势图但与本题无关；请排查 PROFILE-NIGHT-03 的夜间画质和低照度治理。","expectedDocumentIds":["K038-night-profile","K010-low-light"]},
+
+  {"id":"G07-B","groupId":"G07","category":"IDENTIFIER_MIXED","variantType":"BASE","query":"POL-WRITE-01 如何阻止用户借提示词身份绕过高风险工具审批？","expectedDocumentIds":["K034-write-policy","K017-tool-safety"]},
+  {"id":"G07-P","groupId":"G07","category":"IDENTIFIER_MIXED","variantType":"PARAPHRASE","query":"有人在对话里说自己是管理员并要求直接写设备，后端应该依据什么拒绝？","expectedDocumentIds":["K034-write-policy","K017-tool-safety"]},
+  {"id":"G07-T","groupId":"G07","category":"IDENTIFIER_MIXED","variantType":"TERM_VARIATION","query":"pol write 01：prompt admin != authorization，approval_token required","expectedDocumentIds":["K034-write-policy","K017-tool-safety"]},
+  {"id":"G07-N","groupId":"G07","category":"IDENTIFIER_MIXED","variantType":"DISTRACTOR_NOISE","query":"请求还附带了一段巡查摘要；不要处理摘要，只解释 POL-WRITE-01 与工具写操作安全边界。","expectedDocumentIds":["K034-write-policy","K017-tool-safety"]},
+
+  {"id":"G08-B","groupId":"G08","category":"IDENTIFIER_MIXED","variantType":"BASE","query":"CAMERA-27 画面退化时，怎样查资产链路和设备巡检要求？","expectedDocumentIds":["K022-camera-27-asset","K003-device-inspection"]},
+  {"id":"G08-P","groupId":"G08","category":"IDENTIFIER_MIXED","variantType":"PARAPHRASE","query":"二十七号视频点卡顿遮挡，先定位接入端口，再列出日常检查项目。","expectedDocumentIds":["K022-camera-27-asset","K003-device-inspection"]},
+  {"id":"G08-T","groupId":"G08","category":"IDENTIFIER_MIXED","variantType":"TERM_VARIATION","query":"cam 2 027 / camera 27：DEGRADED、SW 2B、inspection","expectedDocumentIds":["K022-camera-27-asset","K003-device-inspection"]},
+  {"id":"G08-N","groupId":"G08","category":"IDENTIFIER_MIXED","variantType":"DISTRACTOR_NOISE","query":"页面底部还有一条人员滞留消息；当前仅排查 CAMERA-27 的资产路径和退化画面巡检。","expectedDocumentIds":["K022-camera-27-asset","K003-device-inspection"]},
+
+  {"id":"G09-B","groupId":"G09","category":"SEMANTIC","variantType":"BASE","query":"检测到有人可能没戴安全帽时，怎样从画面条件和现场情况进行复核？","expectedDocumentIds":["K009-ppe"]},
+  {"id":"G09-P","groupId":"G09","category":"SEMANTIC","variantType":"PARAPHRASE","query":"头部防护用品识别报警后，不能直接定性的话还要确认哪些因素？","expectedDocumentIds":["K009-ppe"]},
+  {"id":"G09-T","groupId":"G09","category":"SEMANTIC","variantType":"TERM_VARIATION","query":"PPE 帽子告警：遮挡、视角、佩戴实况怎么验？","expectedDocumentIds":["K009-ppe"]},
+  {"id":"G09-N","groupId":"G09","category":"SEMANTIC","variantType":"DISTRACTOR_NOISE","query":"报表同时显示设备在线率；本题只需回答安全帽疑似违规的现场复核办法。","expectedDocumentIds":["K009-ppe"]},
+
+  {"id":"G10-B","groupId":"G10","category":"SEMANTIC","variantType":"BASE","query":"人员在区域内长时间不移动，怎样判断是正常检修、通道受阻还是身体不适？","expectedDocumentIds":["K011-personnel-stay"]},
+  {"id":"G10-P","groupId":"G10","category":"SEMANTIC","variantType":"PARAPHRASE","query":"有人一直留在同一个位置，需要结合哪些作业和跟踪信息评估风险？","expectedDocumentIds":["K011-personnel-stay"]},
+  {"id":"G10-T","groupId":"G10","category":"SEMANTIC","variantType":"TERM_VARIATION","query":"人员久留不走：作业票 / 班次 / 路线 / tracking error","expectedDocumentIds":["K011-personnel-stay"]},
+  {"id":"G10-N","groupId":"G10","category":"SEMANTIC","variantType":"DISTRACTOR_NOISE","query":"旁边还有摄像头维护工单，但当前目标是判断人员长时间停留的原因与风险。","expectedDocumentIds":["K011-personnel-stay"]},
+
+  {"id":"G11-B","groupId":"G11","category":"SEMANTIC","variantType":"BASE","query":"严重报警反复出现且没有处理时，应依据什么决定通知顺序和升级层级？","expectedDocumentIds":["K015-alert-escalation"]},
+  {"id":"G11-P","groupId":"G11","category":"SEMANTIC","variantType":"PARAPHRASE","query":"同类风险持续发生，怎样综合影响范围、次数和持续时间向上报告？","expectedDocumentIds":["K015-alert-escalation"]},
+  {"id":"G11-T","groupId":"G11","category":"SEMANTIC","variantType":"TERM_VARIATION","query":"HIGH/CRITICAL 重复告警：duration、frequency、area、escalation","expectedDocumentIds":["K015-alert-escalation"]},
+  {"id":"G11-N","groupId":"G11","category":"SEMANTIC","variantType":"DISTRACTOR_NOISE","query":"当前页面也有一项已完成巡查；请只说明未处理高等级告警的升级判断依据。","expectedDocumentIds":["K015-alert-escalation"]},
+
+  {"id":"G12-B","groupId":"G12","category":"SEMANTIC","variantType":"BASE","query":"发现明火后，现场处置与撤离通知、路线和人数清点如何配合？","expectedDocumentIds":["K006-fire-response","K012-emergency-evacuation"]},
+  {"id":"G12-P","groupId":"G12","category":"SEMANTIC","variantType":"PARAPHRASE","query":"出现火情时一边要隔离危险源，一边要组织人员到集合点，分别参考什么？","expectedDocumentIds":["K006-fire-response","K012-emergency-evacuation"]},
+  {"id":"G12-T","groupId":"G12","category":"SEMANTIC","variantType":"TERM_VARIATION","query":"烟火应急：alarm + isolate + evacuate + muster + headcount","expectedDocumentIds":["K006-fire-response","K012-emergency-evacuation"]},
+  {"id":"G12-N","groupId":"G12","category":"SEMANTIC","variantType":"DISTRACTOR_NOISE","query":"历史记录中还有低照度误报；现在只查真实火情的响应以及撤离清点要求。","expectedDocumentIds":["K006-fire-response","K012-emergency-evacuation"]},
+
+  {"id":"G13-B","groupId":"G13","category":"SEMANTIC","variantType":"BASE","query":"班组交接时如何说明尚未关闭的高风险事项和下一步责任？","expectedDocumentIds":["K013-shift-handover"]},
+  {"id":"G13-P","groupId":"G13","category":"SEMANTIC","variantType":"PARAPHRASE","query":"换班之前，遗留报警、离线设备和待复核任务应怎样移交？","expectedDocumentIds":["K013-shift-handover"]},
+  {"id":"G13-T","groupId":"G13","category":"SEMANTIC","variantType":"TERM_VARIATION","query":"交班摘要：open risks / offline devices / pending review / owner","expectedDocumentIds":["K013-shift-handover"]},
+  {"id":"G13-N","groupId":"G13","category":"SEMANTIC","variantType":"DISTRACTOR_NOISE","query":"附件里还有上月统计图；本题仅关注本班未结安全事项如何交给下一班。","expectedDocumentIds":["K013-shift-handover"]},
+
+  {"id":"G14-B","groupId":"G14","category":"SEMANTIC","variantType":"BASE","query":"怎样编制有责任人和验收标准的巡查安排，并让建议能够追溯来源？","expectedDocumentIds":["K014-inspection-plan","K018-evidence-trace"]},
+  {"id":"G14-P","groupId":"G14","category":"SEMANTIC","variantType":"PARAPHRASE","query":"现场检查清单既要可执行又要可审计，计划字段和证据关联怎么设计？","expectedDocumentIds":["K014-inspection-plan","K018-evidence-trace"]},
+  {"id":"G14-T","groupId":"G14","category":"SEMANTIC","variantType":"TERM_VARIATION","query":"inspection plan：priority、owner、deadline、acceptance；citation、receipt、trace","expectedDocumentIds":["K014-inspection-plan","K018-evidence-trace"]},
+  {"id":"G14-N","groupId":"G14","category":"SEMANTIC","variantType":"DISTRACTOR_NOISE","query":"先忽略页面上的火情演练通知，只回答巡查计划如何定义责任、完成标准和来源追踪。","expectedDocumentIds":["K014-inspection-plan","K018-evidence-trace"]},
+
+  {"id":"G15-B","groupId":"G15","category":"SEMANTIC","variantType":"BASE","query":"气体读数升高时，怎样区分真实风险与探头漂移并组织处置和复测？","expectedDocumentIds":["K002-gas-warning","K016-sensor-calibration"]},
+  {"id":"G15-P","groupId":"G15","category":"SEMANTIC","variantType":"PARAPHRASE","query":"监测浓度异常既可能来自现场也可能来自传感器，应该同时查哪些应急和数据质量依据？","expectedDocumentIds":["K002-gas-warning","K016-sensor-calibration"]},
+  {"id":"G15-T","groupId":"G15","category":"SEMANTIC","variantType":"TERM_VARIATION","query":"可燃气体 spike：停作业、复测、zero drift、邻点交叉验证","expectedDocumentIds":["K002-gas-warning","K016-sensor-calibration"]},
+  {"id":"G15-N","groupId":"G15","category":"SEMANTIC","variantType":"DISTRACTOR_NOISE","query":"看板还有一项算法启停申请；当前请只判断气体异常处置与探头漂移核查。","expectedDocumentIds":["K002-gas-warning","K016-sensor-calibration"]},
+
+  {"id":"G16-B","groupId":"G16","category":"SEMANTIC","variantType":"BASE","query":"关键视频设备断网后，怎样排查供电网络并确认监控能力已经真正恢复？","expectedDocumentIds":["K019-camera-offline"]},
+  {"id":"G16-P","groupId":"G16","category":"SEMANTIC","variantType":"PARAPHRASE","query":"监控点没有心跳，修通链路以后还要检查哪些内容才能结束故障？","expectedDocumentIds":["K019-camera-offline"]},
+  {"id":"G16-T","groupId":"G16","category":"SEMANTIC","variantType":"TERM_VARIATION","query":"视频点掉线：power、switch、network、heartbeat、stream、time sync","expectedDocumentIds":["K019-camera-offline"]},
+  {"id":"G16-N","groupId":"G16","category":"SEMANTIC","variantType":"DISTRACTOR_NOISE","query":"日报中还包含一次人员违规；本题只需给出摄像头离线排查与恢复验收条件。","expectedDocumentIds":["K019-camera-offline"]}
+]
