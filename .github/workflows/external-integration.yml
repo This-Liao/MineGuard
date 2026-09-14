@@ -28,13 +28,40 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: maven
+      - name: 拉取外部服务镜像（有限重试）
+        shell: bash
+        timeout-minutes: 10
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            echo "第 ${attempt}/3 次拉取 PostgreSQL、etcd、MinIO 与 Milvus 镜像"
+            if docker compose -f infra/compose.integration.yml pull; then
+              exit 0
+            fi
+            if [ "${attempt}" -eq 3 ]; then
+              echo "::error::外部服务镜像连续 3 次拉取失败，请查看本步骤中的仓库响应"
+              exit 1
+            fi
+            delay=$((attempt * 15))
+            echo "镜像拉取失败，${delay} 秒后重试"
+            sleep "${delay}"
+          done
       - name: 启动本次 runner 的隔离数据库
+        timeout-minutes: 6
         run: docker compose -f infra/compose.integration.yml up -d --wait --wait-timeout 300
       - name: 运行外部服务与恢复测试
         run: mvn --batch-mode --no-transfer-progress -Pexternal-it verify
+      - name: 收集外部服务诊断
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p data/runtime/external-ci
+          docker compose -f infra/compose.integration.yml ps -a > data/runtime/external-ci/compose-ps.txt 2>&1 || true
+          docker compose -f infra/compose.integration.yml images > data/runtime/external-ci/compose-images.txt 2>&1 || true
+          docker compose -f infra/compose.integration.yml logs --no-color --timestamps > data/runtime/external-ci/compose-logs.txt 2>&1 || true
       - name: 保存集成测试报告
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: external-integration-reports
           path: |
@@ -43,6 +70,7 @@ jobs:
             target/site/jacoco/
             data/runtime/distributed-it/**/report.json
             data/runtime/distributed-it/**/node-*.log
+            data/runtime/external-ci/
           retention-days: 14
           if-no-files-found: warn
       - name: 清理本次临时 runner 的测试容器与卷
